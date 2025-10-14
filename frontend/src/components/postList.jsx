@@ -1,55 +1,59 @@
 import PostListItem from "./postListItem";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { fetchInfinitePosts } from "../utils/post.databank";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PostList = () => {
-const allPosts = [
-    {
-      _id: "1",
-      title: "Getting Started with React",
-      slug: "getting-started-react",
-      category: "React",
-      createdAt: "2024-08-20T10:30:00.000Z",
-      img: "https://via.placeholder.com/735x400",
-      desc: "A beginner-friendly guide to understanding the fundamentals of React and how to build your first component.",
-      user: { username: "john_doe" },
-    },
-    {
-      _id: "2",
-      title: "Understanding JavaScript Closures",
-      slug: "js-closures",
-      category: "JavaScript",
-      createdAt: "2024-08-21T11:00:00.000Z",
-      img: "https://via.placeholder.com/735x400",
-      desc: "Closures are one of the most powerful concepts in JavaScript. Let’s break them down with simple examples.",
-      user: { username: "jane_smith" },
-    },
-    {
-      _id: "3",
-      title: "Intro to TailwindCSS",
-      slug: "intro-tailwindcss",
-      category: "CSS",
-      createdAt: "2024-08-22T09:00:00.000Z",
-      img: "https://via.placeholder.com/735x400",
-      desc: "Learn how to rapidly build modern websites using TailwindCSS utility-first classes.",
-      user: { username: "alex_dev" },
-    },
-    {
-      _id: "4",
-      title: "Building REST APIs with Express",
-      slug: "rest-api-express",
-      category: "Node.js",
-      createdAt: "2024-08-23T15:30:00.000Z",
-      img: "https://via.placeholder.com/735x400",
-      desc: "Step-by-step tutorial on building REST APIs using Express.js with proper routing and error handling.",
-      user: { username: "sara_code" },
-    },
-  ];
+  const limit = 5
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["posts", limit],
+    queryFn: fetchInfinitePosts,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage?.hasMore ? pages?.length + 1 : undefined,
+  });
+  if (isFetching) return "Loading...";
 
-
+  // if (status === "error") return "Something went wrong!";
+  if (error) return "Something went wrong!";
+console.log({data})
+  const allPosts = data?.pages?.flatMap((page) => page?.posts) || [];
+  console.log({ allPosts });
   return (
     <div className="flex flex-col gap-6">
-      {allPosts.map((post) => (
-        <PostListItem key={post._id} post={post} />
-      ))}
+      <InfiniteScroll
+        dataLength={allPosts?.length}
+        next={fetchNextPage}
+        hasMore={true}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        // refreshFunction={this.refresh}
+        // pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
+        }
+      >
+        {allPosts?.map((post) => (
+          <PostListItem key={post._id} post={post} />
+        ))}
+      </InfiniteScroll>
     </div>
   );
 };

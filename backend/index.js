@@ -1,15 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import commentRoutes from "./routes/comment.route.js";
 import webHookRoutes from "./routes/webhook.route.js";
-import dotenv from "dotenv";
 import { connectDB } from "./lib/connectDB.js";
-import { clerkClient, clerkMiddleware, getAuth } from "@clerk/express";
-
+import { clerkMiddleware, getAuth } from "@clerk/express";
+import cors from "cors";
 const app = express();
 
-dotenv.config();
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use("/webhooks", webHookRoutes);
 app.use(clerkMiddleware());
 app.use(express.json());
@@ -34,6 +37,15 @@ app.use(
     });
   }
 );
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.use((error, req, res, next) => {
   res.json({

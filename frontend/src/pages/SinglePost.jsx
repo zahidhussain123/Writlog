@@ -1,8 +1,22 @@
 import { Link, useParams } from "react-router-dom";
 import Image from "../components/Image";
+import Search from "../components/Search";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "timeago.js";
+import { fetchSinglePost } from "../utils/post.databank";
 
 const SinglePostPage = () => {
   const { slug } = useParams();
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ["post", slug],
+    queryFn: () => fetchSinglePost(slug),
+  });
+console.log({data})
+  if (isPending) return "loading...";
+  if (error) return "Something went wrong!" + error.message;
+  if (!data) return "Post not found!";
 
   return (
     <div className="flex flex-col gap-8">
@@ -10,31 +24,22 @@ const SinglePostPage = () => {
       <div className="flex gap-8">
         <div className="lg:w-3/5 flex flex-col gap-8">
           <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">
-            {/* {data.title} */}
-            Single Post
+            {data?.title}
           </h1>
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <span>Written by</span>
-            {/* <Link className="text-blue-800">{data.user.username}</Link> */}
+            <Link className="text-blue-800">{data?.user?.username || ""}</Link>
             <span>on</span>
-            {/* <Link className="text-blue-800">{data.category}</Link> */}
-            <Link className="text-blue-800">Entertainment</Link>
-            {/* <span>{format(data.createdAt)}</span> */}
-            <span>23-3-2025</span>
+            <Link className="text-blue-800">{data.category}</Link>
+            <span>{format(data.createdAt)}</span>
           </div>
-          {/* <p className="text-gray-500 font-medium">{data.desc}</p> */}
-          <p className="text-gray-500 font-medium">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore
-            harum vel eligendi voluptatibus labore quidem veniam, pariatur
-            voluptates. Delectus tempore consectetur dolorum reprehenderit
-            ratione numquam quasi quaerat rem necessitatibus molestiae?
-          </p>
+          <p className="text-gray-500 font-medium">{data.desc}</p>
         </div>
-        {/* {data.img && (
+        {data?.img && (
           <div className="hidden lg:block w-2/5">
-            <Image src={data.img} w="600" className="rounded-2xl" />
+            <Image src={data?.img} w="600" className="rounded-2xl" />
           </div>
-        )} */}
+        )}
       </div>
       {/* content */}
       <div className="flex flex-col md:flex-row gap-12 justify-between">
@@ -130,15 +135,16 @@ const SinglePostPage = () => {
           <h1 className="mb-4 text-sm font-medium">Author</h1>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-8">
-              {/* {data.user.img && (
+              {data?.user?.img && (
                 <Image
-                  src={data.user.img}
+                  src={data?.user?.img || ""}
                   className="w-12 h-12 rounded-full object-cover"
                   w="48"
                   h="48"
+                  onError={data?.user?.img || ""}
                 />
-              )} */}
-              {/* <Link className="text-blue-800">{data.user.username}</Link> */}
+              )}
+              <Link className="text-blue-800">{data?.user?.username || ""}</Link>
             </div>
             <p className="text-sm text-gray-500">
               Lorem ipsum dolor sit amet consectetur
@@ -152,7 +158,7 @@ const SinglePostPage = () => {
               </Link>
             </div>
           </div>
-          {/* <PostMenuActions post={data} /> */}
+          {/* <PostMenuActions post={data}/> */}
           <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
           <div className="flex flex-col gap-2 text-sm">
             <Link className="underline">All</Link>
@@ -173,10 +179,10 @@ const SinglePostPage = () => {
             </Link>
           </div>
           <h1 className="mt-8 mb-4 text-sm font-medium">Search</h1>
-          {/* <Search /> */}
+          <Search />
         </div>
       </div>
-      {/* <Comments postId={data._id} /> */}
+      {/* <Comments postId={data._id}/> */}
     </div>
   );
 };
