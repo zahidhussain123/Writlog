@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Loader2, Trash2, TriangleAlert } from "lucide-react";
 import { deletePost } from "../utils/post.databank";
+import { usePostPermissions } from "../hooks/usePostPermissions";
 import { routePaths } from "../constants/pathRoute";
 
 /**
@@ -13,7 +14,7 @@ import { routePaths } from "../constants/pathRoute";
  */
 const DeletePostButton = ({ post, className = "" }) => {
   const [open, setOpen] = useState(false);
-  const { user, isSignedIn } = useUser();
+  const { canDelete } = usePostPermissions(post);
   const { getToken } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -52,12 +53,7 @@ const DeletePostButton = ({ post, className = "" }) => {
     };
   }, [open, mutation.isPending]);
 
-  const isAdmin = user?.publicMetadata?.role === "admin";
-  // Match on clerkId, not username. The stored `username` is a display name
-  // built from first/last name, which never equals Clerk's `user.username`.
-  const isOwner = !!post?.user?.clerkId && post.user.clerkId === user?.id;
-
-  if (!isSignedIn || (!isOwner && !isAdmin)) return null;
+  if (!canDelete) return null;
 
   return (
     <>

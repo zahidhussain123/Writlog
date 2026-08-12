@@ -23,6 +23,11 @@ export const router = createBrowserRouter([
         element: <Write />,
       },
       {
+        // Same editor, prefilled from the post being edited.
+        path: routePaths?.EDIT ?? "/",
+        element: <Write />,
+      },
+      {
         path: routePaths?.POSTS ?? "/",
         element: <PostListPage />,
       },

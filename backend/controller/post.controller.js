@@ -3,6 +3,7 @@ import { getImageKit } from "../lib/imagekit.js";
 import commentModel from "../models/comment.model.js";
 import postModel from "../models/post.model.js";
 import userModel from "../models/user.model.js";
+import { ensureUser } from "../lib/users.js";
 
 const SORT_OPTIONS = {
   newest: { createdAt: -1 },
@@ -70,12 +71,21 @@ export const getPost = async (req, res) => {
     // clerkId lets the client tell whether the reader owns this post; the
     // delete endpoint re-checks it server-side either way.
     const post = await postModel
-      .findOneAndUpdate({ slug: req.params.slug }, { $inc: { visit: 1 } }, { new: true })
+      .findOne({ slug: req.params.slug })
       .populate("user", "username displayName img clerkId");
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
+
+    // Authors reloading their own post shouldn't inflate the counter that
+    // drives the popular and trending sorts.
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId || post.user?.clerkId !== clerkId) {
+      await postModel.updateOne({ _id: post._id }, { $inc: { visit: 1 } });
+      post.visit += 1;
+    }
+
     res.status(200).json(post);
   } catch (error) {
     console.error("getPost failed:", error);
@@ -90,7 +100,7 @@ export const createPost = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = await userModel.findOne({ clerkId });
+    const user = await ensureUser(clerkId);
     if (!user) {
       return res.status(404).json({ message: "User not found. Please sign in again." });
     }
@@ -128,6 +138,77 @@ export const createPost = async (req, res) => {
   }
 };
 
+// Fields an author may change after publishing. `slug` is deliberately absent:
+// regenerating it on a title edit would break every existing link.
+const OWNER_EDITABLE = ["title", "desc", "category", "content", "img"];
+
+export const updatePost = async (req, res) => {
+  try {
+    const { userId: clerkId, sessionClaims } = getAuth(req);
+    if (!clerkId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Post id is required" });
+    }
+
+    const isAdmin = sessionClaims?.metadata?.role === "admin";
+
+    const post = await postModel.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (!isAdmin) {
+      const user = await ensureUser(clerkId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (!post.user.equals(user._id)) {
+        return res.status(403).json({ message: "You can edit only your own posts" });
+      }
+    }
+
+    const updates = {};
+    for (const field of OWNER_EDITABLE) {
+      if (req.body?.[field] !== undefined) updates[field] = req.body[field];
+    }
+
+    // Featuring is an editorial call, so it stays admin-only even on your own post.
+    if (req.body?.isFeatured !== undefined) {
+      if (!isAdmin) {
+        return res.status(403).json({ message: "Only admins can feature posts" });
+      }
+      updates.isFeatured = Boolean(req.body.isFeatured);
+    }
+
+    if (updates.title !== undefined) {
+      updates.title = String(updates.title).trim();
+      if (!updates.title) {
+        return res.status(400).json({ message: "Title is required" });
+      }
+    }
+    if (updates.content !== undefined && !String(updates.content).trim()) {
+      return res.status(400).json({ message: "Content is required" });
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ message: "No supported fields to update" });
+    }
+
+    const updated = await postModel
+      .findByIdAndUpdate(id, updates, { new: true })
+      .populate("user", "username displayName img clerkId");
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("updatePost failed:", error);
+    res.status(500).json({ message: "Error updating post", error: error.message });
+  }
+};
+
 export const deletePost = async (req, res) => {
   try {
     const { userId: clerkId, sessionClaims } = getAuth(req);
@@ -148,7 +229,7 @@ export const deletePost = async (req, res) => {
       return res.status(200).json({ message: "Post is deleted successfully" });
     }
 
-    const user = await userModel.findOne({ clerkId });
+    const user = await ensureUser(clerkId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

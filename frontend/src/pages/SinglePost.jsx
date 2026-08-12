@@ -7,6 +7,7 @@ import {
   Clock,
   Eye,
   Home,
+  Star,
   TriangleAlert,
 } from "lucide-react";
 import Image from "../components/Image";
@@ -15,6 +16,8 @@ import Comments from "../components/Comments";
 import SharePost from "../components/sharePost";
 import ReadingProgress from "../components/readingProgress";
 import DeletePostButton from "../components/deletePostButton";
+import FeaturePostButton from "../components/featurePostButton";
+import EditPostLink from "../components/editPostLink";
 import { fetchSinglePost } from "../utils/post.databank";
 import { formatCount, readingTime } from "../utils/readingTime";
 import { authorHandle, authorInitials, authorName } from "../utils/author";
@@ -100,9 +103,17 @@ const SinglePostPage = () => {
 
       {/* TITLE BLOCK: centred, magazine style */}
       <header className="mx-auto mt-10 max-w-3xl text-center">
-        <Link to={`/posts?cat=${data.category}`} className="tag">
-          {data.category || "general"}
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Link to={`/posts?cat=${data.category}`} className="tag">
+            {data.category || "general"}
+          </Link>
+          {data.isFeatured && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-100 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-accent-600 ring-1 ring-inset ring-accent-500/20">
+              <Star size={11} className="fill-current" />
+              Featured
+            </span>
+          )}
+        </div>
 
         <h1 className="mt-5 font-display text-3xl font-black leading-[1.1] tracking-tight text-ink-950 md:text-5xl lg:text-[3.5rem]">
           {data.title}
@@ -165,6 +176,8 @@ const SinglePostPage = () => {
 
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <SharePost title={data.title} />
+          <EditPostLink post={data} />
+          <FeaturePostButton post={data} />
           <DeletePostButton post={data} />
         </div>
       </header>

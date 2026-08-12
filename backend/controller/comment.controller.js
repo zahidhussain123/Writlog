@@ -1,6 +1,6 @@
 import { getAuth } from "@clerk/express";
 import commentModel from "../models/comment.model.js";
-import userModel from "../models/user.model.js";
+import { ensureUser } from "../lib/users.js";
 
 export const getPostComments = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ export const createComment = async (req, res) => {
       return res.status(401).json({ message: "Not authenticated!" });
     }
 
-    const user = await userModel.findOne({ clerkId });
+    const user = await ensureUser(clerkId);
     if (!user) {
       return res.status(404).json({ message: "User not found. Please sign in again." });
     }
@@ -64,7 +64,7 @@ export const deleteComment = async (req, res) => {
       return res.status(200).json({ message: "Comment is deleted successfully" });
     }
 
-    const user = await userModel.findOne({ clerkId });
+    const user = await ensureUser(clerkId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

@@ -23,16 +23,45 @@ export const fetchInfinitePosts = async ({ pageParam = 1, queryKey }) => {
   return res.data;
 };
 
+/**
+ * Featured posts are hand-picked by an admin (`isFeatured`). Until enough are
+ * flagged, the section is topped up with the most-viewed posts so it never
+ * renders half-empty.
+ */
 export const fetchFeaturedPosts = async ({ queryKey }) => {
   const [, limit = 4] = queryKey;
-  const res = await axios.get(`${BASE_URL}/posts`, {
+
+  const { data } = await axios.get(`${BASE_URL}/posts`, {
+    params: { limit, featured: "true" },
+  });
+
+  const featured = data?.posts ?? [];
+  if (featured.length >= limit) {
+    return { ...data, posts: featured.slice(0, limit) };
+  }
+
+  const { data: popular } = await axios.get(`${BASE_URL}/posts`, {
     params: { limit, sort: "popular" },
   });
-  return res.data;
+
+  const alreadyShown = new Set(featured.map((post) => post._id));
+  const filler = (popular?.posts ?? []).filter(
+    (post) => !alreadyShown.has(post._id)
+  );
+
+  return { ...data, posts: [...featured, ...filler].slice(0, limit) };
 };
 
 export const fetchSinglePost = async (slug) => {
   const res = await axios.get(`${BASE_URL}/posts/${slug}`);
+  return res.data;
+};
+
+export const updatePost = async (id, payload, getToken) => {
+  const token = await getToken();
+  const res = await axios.patch(`${BASE_URL}/posts/post/${id}`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return res.data;
 };
 
