@@ -1,11 +1,12 @@
 import { useSearchParams } from "react-router-dom";
+import { Check, Clock, Flame, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
 import Search from "./search";
 
 const SORTS = [
-  { value: "newest", label: "Newest" },
-  { value: "popular", label: "Most Popular" },
-  { value: "trending", label: "Trending" },
-  { value: "oldest", label: "Oldest" },
+  { value: "newest", label: "Newest", Icon: Sparkles },
+  { value: "popular", label: "Most Popular", Icon: Flame },
+  { value: "trending", label: "Trending", Icon: TrendingUp },
+  { value: "oldest", label: "Oldest", Icon: Clock },
 ];
 
 const CATEGORIES = [
@@ -22,6 +23,7 @@ const SideMenu = () => {
 
   const activeSort = searchParams.get("sort") || "newest";
   const activeCat = searchParams.get("cat") || "all";
+  const hasFilters = [...searchParams.keys()].length > 0;
 
   const updateParam = (key, value) => {
     const next = Object.fromEntries(searchParams.entries());
@@ -34,46 +36,76 @@ const SideMenu = () => {
   };
 
   return (
-    <div className="px-4 h-max sticky top-8 w-full md:w-64">
-      <h1 className="mb-4 text-sm font-medium">Search</h1>
-      <Search />
+    <aside className="h-max w-full md:sticky md:top-28 md:w-72">
+      <div className="card p-5">
+        <h2 className="eyebrow mb-3">Search</h2>
+        <Search />
 
-      <h1 className="mt-8 mb-4 text-sm font-medium">Filter</h1>
-      <div className="flex flex-col gap-2 text-sm">
-        {SORTS?.map((option) => (
-          <label
-            key={option.value}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <input
-              type="radio"
-              name="sort"
-              value={option.value}
-              checked={activeSort === option.value}
-              onChange={(e) => updateParam("sort", e.target.value)}
-              className="appearance-none w-4 h-4 border-[1.5px] border-blue-800 cursor-pointer rounded-sm bg-white checked:bg-blue-800"
-            />
-            {option?.label}
-          </label>
-        ))}
-      </div>
+        <div className="hairline my-6" />
 
-      <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
-      <div className="flex flex-col gap-2 text-sm items-start">
-        {CATEGORIES?.map((category) => (
-          <button
-            key={category.value}
-            type="button"
-            onClick={() => updateParam("cat", category.value)}
-            className={`underline cursor-pointer text-left ${
-              activeCat === category.value ? "text-blue-800 font-medium" : ""
-            }`}
-          >
-            {category.label}
-          </button>
-        ))}
+        <h2 className="eyebrow mb-3">Sort by</h2>
+        <div className="flex flex-col gap-1">
+          {SORTS.map(({ value, label, Icon }) => {
+            const active = activeSort === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => updateParam("sort", value)}
+                className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition duration-200 ${
+                  active
+                    ? "bg-brand-50 font-semibold text-brand-800 ring-1 ring-inset ring-brand-600/15"
+                    : "text-ink-600 hover:bg-ink-900/[0.04] hover:text-ink-900"
+                }`}
+              >
+                <Icon
+                  size={15}
+                  className={active ? "text-brand-600" : "text-ink-400"}
+                />
+                {label}
+                {active && <Check size={14} className="ml-auto text-brand-600" />}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="hairline my-6" />
+
+        <h2 className="eyebrow mb-3">Categories</h2>
+        <div className="flex flex-wrap gap-1.5">
+          {CATEGORIES.map((category) => (
+            <button
+              key={category.value}
+              type="button"
+              aria-pressed={activeCat === category.value}
+              onClick={() => updateParam("cat", category.value)}
+              className={`rounded-full px-3 py-1.5 text-[0.8rem] font-medium transition duration-200 ${
+                activeCat === category.value
+                  ? "bg-ink-950 text-white shadow-soft"
+                  : "bg-ink-900/[0.045] text-ink-600 hover:bg-ink-900/[0.08] hover:text-ink-900"
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {hasFilters && (
+          <>
+            <div className="hairline my-6" />
+            <button
+              type="button"
+              onClick={() => setSearchParams({})}
+              className="flex items-center gap-2 text-sm font-medium text-ink-500 transition hover:text-brand-700"
+            >
+              <RotateCcw size={14} />
+              Clear all filters
+            </button>
+          </>
+        )}
       </div>
-    </div>
+    </aside>
   );
 };
 

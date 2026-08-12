@@ -1,27 +1,28 @@
-import {
-  SignedOut,
-  //   SignInButton,
-  SignedIn,
-  UserButton,
-} from "@clerk/clerk-react";
-import { routePaths } from "../constants/pathRoute";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { routePaths } from "../constants/pathRoute";
 
 const AuthHeader = () => {
   return (
-    <header>
+    <div className="flex items-center">
       <SignedOut>
-        {/* <SignInButton /> */}
-        <Link to={routePaths?.LOGIN ?? ""}>
-          <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
-            Login 👋
-          </button>
+        <Link to={routePaths?.LOGIN ?? ""} className="btn-primary">
+          Sign in
         </Link>
       </SignedOut>
+
       <SignedIn>
-        <UserButton />
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox:
+                "h-9 w-9 ring-2 ring-white shadow-soft rounded-full transition hover:ring-brand-200",
+              userButtonPopoverCard: "rounded-2xl shadow-lift",
+            },
+          }}
+        />
       </SignedIn>
-    </header>
+    </div>
   );
 };
 

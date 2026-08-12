@@ -70,7 +70,7 @@ const start = async () => {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("\n❌ Could not start the server — the database is unreachable.");
+    console.error("\n❌ Could not start the server. The database is unreachable.");
     console.error(`   ${error.message}\n`);
     console.error("   Check MONGODB in backend/.env and that your Atlas cluster exists");
     console.error("   and that this machine's IP is allowed in Atlas → Network Access.\n");

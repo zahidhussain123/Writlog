@@ -1,52 +1,72 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Search as SearchIcon, X } from "lucide-react";
 
-const Search = () => {
+const Search = ({ className = "" }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [value, setValue] = useState(searchParams.get("search") || "");
 
-  const handleKeyDown = (e) => {
-    if (e.key !== "Enter") return;
+  // Keep the box in step with the URL (back/forward, or a cleared filter).
+  useEffect(() => {
+    setValue(searchParams.get("search") || "");
+  }, [searchParams]);
 
-    const value = e.target.value.trim();
+  const submit = (term) => {
+    const next = term.trim();
 
-    // The search box also appears on pages that don't render a post list —
+    // The search box also appears on pages that don't render a post list, so
     // send those to /posts so the query actually has somewhere to land.
     if (location.pathname !== "/posts") {
-      navigate(value ? `/posts?search=${encodeURIComponent(value)}` : "/posts");
+      navigate(next ? `/posts?search=${encodeURIComponent(next)}` : "/posts");
       return;
     }
 
-    const next = Object.fromEntries(searchParams.entries());
-    if (value) {
-      next.search = value;
+    const params = Object.fromEntries(searchParams.entries());
+    if (next) {
+      params.search = next;
     } else {
-      delete next.search;
+      delete params.search;
     }
-    setSearchParams(next);
+    setSearchParams(params);
   };
 
   return (
-    <div className="bg-gray-100 p-2 rounded-full flex items-center gap-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="gray"
-      >
-        <circle cx="10.5" cy="10.5" r="7.5" />
-        <line x1="16.5" y1="16.5" x2="22" y2="22" />
-      </svg>
-      <input
-        type="text"
-        placeholder="search a post..."
-        defaultValue={searchParams.get("search") || ""}
-        className="bg-transparent outline-none w-full"
-        onKeyDown={handleKeyDown}
+    <form
+      role="search"
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit(value);
+      }}
+      className={`group flex items-center gap-2.5 rounded-full border border-ink-900/[0.08] bg-white/70 px-4 py-2.5 shadow-soft transition focus-within:border-brand-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-brand-500/10 ${className}`}
+    >
+      <SearchIcon
+        size={17}
+        className="shrink-0 text-ink-400 transition group-focus-within:text-brand-600"
       />
-    </div>
+      <input
+        type="search"
+        aria-label="Search posts"
+        placeholder="Search a post…"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        className="w-full bg-transparent text-sm text-ink-800 outline-none placeholder:text-ink-400 [&::-webkit-search-cancel-button]:hidden"
+      />
+      {value && (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onClick={() => {
+            setValue("");
+            submit("");
+          }}
+          className="shrink-0 rounded-full p-1 text-ink-400 transition hover:bg-ink-900/[0.06] hover:text-ink-700"
+        >
+          <X size={14} />
+        </button>
+      )}
+    </form>
   );
 };
 

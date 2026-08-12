@@ -35,3 +35,11 @@ export const fetchSinglePost = async (slug) => {
   const res = await axios.get(`${BASE_URL}/posts/${slug}`);
   return res.data;
 };
+
+export const deletePost = async (id, getToken) => {
+  const token = await getToken();
+  const res = await axios.delete(`${BASE_URL}/posts/post/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};

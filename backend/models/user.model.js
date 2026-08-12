@@ -6,10 +6,16 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  // Unique handle used in URLs (?author=). Derived, never free text.
   username: {
     type: String,
     required: true,
     unique: true,
+  },
+  // Human-readable name for display. Not unique, since two people may share one.
+  displayName: {
+    type: String,
+    default: "",
   },
   email: {
     type: String,

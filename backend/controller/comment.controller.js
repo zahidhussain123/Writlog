@@ -6,7 +6,7 @@ export const getPostComments = async (req, res) => {
   try {
     const comments = await commentModel
       .find({ post: req.params.postId })
-      .populate("user", "username img")
+      .populate("user", "username displayName img clerkId")
       .sort({ createdAt: -1 });
 
     res.status(200).json(comments);
@@ -40,7 +40,7 @@ export const createComment = async (req, res) => {
     });
 
     // Return the populated document so the UI can render the author immediately.
-    await savedComment.populate("user", "username img");
+    await savedComment.populate("user", "username displayName img clerkId");
 
     res.status(201).json(savedComment);
   } catch (error) {

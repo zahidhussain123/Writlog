@@ -16,24 +16,30 @@ const MainCategories = () => {
   const activeCat = searchParams.get("cat") || "all";
 
   return (
-    <div className="hidden md:flex bg-white rounded-3xl xl:rounded-full p-4 shadow-lg items-center justify-center gap-8">
-      <div className="flex-1 flex items-center justify-between flex-wrap gap-2">
-        {CATEGORIES?.map((category) => (
-          <Link
-            key={category.value}
-            to={category.to}
-            className={`rounded-full px-4 py-2 transition ${
-              activeCat === category.value
-                ? "bg-blue-800 text-white"
-                : "hover:bg-blue-50"
-            }`}
-          >
-            {category.label}
-          </Link>
-        ))}
+    <div className="glass-bar rounded-4xl p-2.5 xl:rounded-full">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+        {/* Category rail. Scrolls sideways on narrow screens instead of wrapping. */}
+        <nav
+          aria-label="Categories"
+          className="flex flex-1 items-center gap-1 overflow-x-auto px-1 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {CATEGORIES.map((category) => (
+            <Link
+              key={category.value}
+              to={category.to}
+              className={`pill ${
+                activeCat === category.value ? "pill-active" : ""
+              }`}
+            >
+              {category.label}
+            </Link>
+          ))}
+        </nav>
+
+        <span className="hidden h-7 w-px shrink-0 bg-ink-900/10 xl:block" />
+
+        <Search className="xl:w-72 xl:shrink-0 xl:border-transparent xl:bg-ink-900/[0.035] xl:shadow-none" />
       </div>
-      <span className="text-xl font-medium text-slate-300">|</span>
-      <Search />
     </div>
   );
 };

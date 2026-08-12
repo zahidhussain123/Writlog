@@ -1,11 +1,13 @@
 import { format } from "timeago.js";
-import Image from "./Image";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Trash2 } from "lucide-react";
+import Image from "./Image";
+import { authorInitials, authorName } from "../utils/author";
 
-const Comment = ({ comment, postId }) => {
+const Comment = ({ comment, postId, pending = false }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
   const role = user?.publicMetadata?.role;
@@ -33,35 +35,58 @@ const Comment = ({ comment, postId }) => {
     },
   });
 
+  const username = authorName(comment?.user);
+  // Match on clerkId, not username. The stored `username` is a display name
+  // built from first/last name, which never equals Clerk's `user.username`.
+  const isOwner = !!comment?.user?.clerkId && comment.user.clerkId === user?.id;
+  const canDelete = !pending && !!user && (isOwner || role === "admin");
+
   return (
-    <div className="p-4 bg-slate-50 rounded-xl mb-8">
-      <div className="flex items-center gap-4">
-        {comment && comment?.user?.img && (
+    <article
+      className={`group card p-5 transition ${
+        pending ? "opacity-60" : "hover:border-ink-900/[0.09]"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        {comment?.user?.img ? (
           <Image
-            src={comment?.user?.img}
-            className="w-10 h-10 rounded-full object-cover"
-            w="40"
+            src={comment.user.img}
+            alt={username}
+            className="h-9 w-9 rounded-full object-cover ring-2 ring-white"
+            w="36"
+            h="36"
           />
+        ) : (
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[0.7rem] font-bold text-brand-700 ring-2 ring-white">
+            {authorInitials(comment?.user)}
+          </span>
         )}
-        <span className="font-medium">{comment?.user?.username}</span>
-        <span className="text-sm text-gray-500">
-          {format(comment.createdAt)}
-        </span>
-        {user &&
-          (comment?.user?.username === user?.username || role === "admin") && (
-            <span
-              className="text-xs text-red-300 hover:text-red-500 cursor-pointer"
-              onClick={() => mutation.mutate()}
-            >
-              delete
-              {mutation.isPending && <span>(in progress)</span>}
-            </span>
-          )}
+
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-ink-900">{username}</p>
+          <p className="text-xs text-ink-400">
+            {pending ? "Posting…" : format(comment.createdAt)}
+          </p>
+        </div>
+
+        {canDelete && (
+          <button
+            type="button"
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending}
+            aria-label="Delete comment"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-ink-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50"
+          >
+            <Trash2 size={13} />
+            {mutation.isPending ? "Deleting…" : "Delete"}
+          </button>
+        )}
       </div>
-      <div className="mt-4">
-        <p className="whitespace-pre-line text-slate-700">{comment?.desc}</p>
-      </div>
-    </div>
+
+      <p className="mt-4 whitespace-pre-line text-[0.95rem] leading-relaxed text-ink-700">
+        {comment?.desc}
+      </p>
+    </article>
   );
 };
 

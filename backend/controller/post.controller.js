@@ -1,5 +1,6 @@
 import { getAuth } from "@clerk/express";
 import { getImageKit } from "../lib/imagekit.js";
+import commentModel from "../models/comment.model.js";
 import postModel from "../models/post.model.js";
 import userModel from "../models/user.model.js";
 
@@ -52,7 +53,7 @@ export const getPosts = async (req, res) => {
     const totalPosts = await postModel.countDocuments(query);
     const posts = await postModel
       .find(query)
-      .populate("user", "username img")
+      .populate("user", "username displayName img")
       .sort(SORT_OPTIONS[sort])
       .skip((page - 1) * limit)
       .limit(limit);
@@ -66,9 +67,11 @@ export const getPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
   try {
+    // clerkId lets the client tell whether the reader owns this post; the
+    // delete endpoint re-checks it server-side either way.
     const post = await postModel
       .findOneAndUpdate({ slug: req.params.slug }, { $inc: { visit: 1 } }, { new: true })
-      .populate("user", "username img");
+      .populate("user", "username displayName img clerkId");
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -140,6 +143,8 @@ export const deletePost = async (req, res) => {
     if (sessionClaims?.metadata?.role === "admin") {
       const deleted = await postModel.findByIdAndDelete(id);
       if (!deleted) return res.status(404).json({ message: "Post not found" });
+      // Comments reference the post, so they'd be orphaned without this.
+      await commentModel.deleteMany({ post: id });
       return res.status(200).json({ message: "Post is deleted successfully" });
     }
 
@@ -152,6 +157,8 @@ export const deletePost = async (req, res) => {
     if (!deleted) {
       return res.status(403).json({ message: "You can delete only your own posts" });
     }
+
+    await commentModel.deleteMany({ post: id });
 
     res.status(200).json({ message: "Post is deleted successfully" });
   } catch (error) {

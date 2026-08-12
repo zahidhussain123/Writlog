@@ -1,23 +1,27 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "timeago.js";
+import { Clock, Eye } from "lucide-react";
 import Image from "./Image";
 import { fetchFeaturedPosts } from "../utils/post.databank";
+import { formatCount, readingTime } from "../utils/readingTime";
+import { authorName } from "../utils/author";
 
 const FeaturedSkeleton = () => (
-  <div className="mt-8 flex flex-col lg:flex-row gap-8 animate-pulse">
-    <div className="w-full lg:w-1/2 flex flex-col gap-4">
-      <div className="h-72 rounded-3xl bg-slate-200" />
-      <div className="h-4 w-1/3 rounded-full bg-slate-200" />
-      <div className="h-7 w-4/5 rounded-full bg-slate-200" />
+  <div className="mt-8 grid gap-8 lg:grid-cols-2">
+    <div className="flex flex-col gap-4">
+      <div className="skeleton h-80 rounded-4xl" />
+      <div className="skeleton h-4 w-1/3" />
+      <div className="skeleton h-8 w-4/5" />
     </div>
-    <div className="w-full lg:w-1/2 flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
       {[1, 2, 3].map((i) => (
         <div key={i} className="flex gap-4">
-          <div className="w-1/3 aspect-video rounded-3xl bg-slate-200" />
-          <div className="w-2/3 flex flex-col gap-3">
-            <div className="h-3 w-1/2 rounded-full bg-slate-200" />
-            <div className="h-5 w-full rounded-full bg-slate-200" />
+          <div className="skeleton aspect-[4/3] w-32 shrink-0 rounded-2xl" />
+          <div className="flex flex-1 flex-col gap-3 py-1">
+            <div className="skeleton h-3 w-1/2" />
+            <div className="skeleton h-5 w-full" />
+            <div className="skeleton h-3 w-2/3" />
           </div>
         </div>
       ))}
@@ -25,13 +29,12 @@ const FeaturedSkeleton = () => (
   </div>
 );
 
-const CategoryPill = ({ category }) => (
-  <Link
-    to={`/posts?cat=${category || "general"}`}
-    className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-800 transition hover:bg-blue-200"
+const Rank = ({ n, className = "" }) => (
+  <span
+    className={`font-display text-sm font-black tabular-nums text-brand-600 ${className}`}
   >
-    {category || "general"}
-  </Link>
+    {n.toString().padStart(2, "0")}
+  </span>
 );
 
 const FeaturedPosts = () => {
@@ -46,62 +49,103 @@ const FeaturedPosts = () => {
   if (status === "error" || posts.length === 0) return null;
 
   const [lead, ...rest] = posts;
+  const leadMinutes = readingTime(lead.content || lead.desc);
 
   return (
-    <div className="mt-8 flex flex-col lg:flex-row gap-8">
-      {/* Lead story */}
-      <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        <Link to={`/${lead.slug}`} className="group overflow-hidden rounded-3xl">
-          <Image
-            src={lead.img || "featured1.jpeg"}
-            className="rounded-3xl object-cover w-full transition duration-500 group-hover:scale-105"
-            w="895"
-          />
-        </Link>
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold lg:text-lg">01.</span>
-          <CategoryPill category={lead.category} />
-          {lead.createdAt && (
-            <span className="text-gray-500 text-sm">{format(lead.createdAt)}</span>
+    <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-10">
+      {/* Lead story: image, headline and meta stacked into one hover target. */}
+      <Link
+        to={`/${lead.slug}`}
+        className="group relative flex min-h-[22rem] flex-col justify-end overflow-hidden rounded-4xl bg-ink-900 p-6 shadow-card transition duration-500 hover:shadow-lift md:p-8"
+      >
+        <Image
+          src={lead.img || "featured1.jpeg"}
+          alt={lead.title}
+          className="absolute inset-0 h-full w-full object-cover transition duration-[900ms] ease-out group-hover:scale-105"
+          w="895"
+        />
+        <span className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/5" />
+
+        <div className="relative">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Rank n={1} className="text-accent-300" />
+            <span className="rounded-full bg-white/15 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-white ring-1 ring-inset ring-white/25 backdrop-blur-sm">
+              {lead.category || "general"}
+            </span>
+            {lead.createdAt && (
+              <span className="text-xs text-white/70">
+                {format(lead.createdAt)}
+              </span>
+            )}
+          </div>
+
+          <h3 className="mt-4 font-display text-2xl font-black leading-tight tracking-tight text-white md:text-4xl">
+            {lead.title}
+          </h3>
+
+          {lead.desc && (
+            <p className="mt-3 line-clamp-2 max-w-xl text-sm text-white/75">
+              {lead.desc}
+            </p>
           )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-white/70">
+            <span>By {authorName(lead.user)}</span>
+            {leadMinutes && (
+              <>
+                <span className="divider-dot bg-white/40" />
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock size={12} />
+                  {leadMinutes} min read
+                </span>
+              </>
+            )}
+            {lead.visit > 0 && (
+              <>
+                <span className="divider-dot bg-white/40" />
+                <span className="inline-flex items-center gap-1.5">
+                  <Eye size={12} />
+                  {formatCount(lead.visit)}
+                </span>
+              </>
+            )}
+          </div>
         </div>
-        <Link
-          to={`/${lead.slug}`}
-          className="text-xl lg:text-3xl font-semibold lg:font-bold transition hover:text-blue-800"
-        >
-          {lead.title}
-        </Link>
-      </div>
+      </Link>
 
       {/* Runners-up */}
-      <div className="w-full lg:w-1/2 flex flex-col gap-4">
+      <div className="flex flex-col divide-y divide-ink-900/[0.07]">
         {rest.map((post, index) => (
-          <div key={post._id} className="lg:h-1/3 flex justify-between gap-4">
-            <Link to={`/${post.slug}`} className="w-1/3 aspect-video shrink-0">
+          <Link
+            key={post._id}
+            to={`/${post.slug}`}
+            className="group flex flex-1 items-center gap-4 py-4 first:pt-0 last:pb-0 md:gap-5"
+          >
+            <div className="relative aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-2xl bg-ink-100 sm:w-36">
               <Image
                 src={post.img || "featured2.jpeg"}
-                className="rounded-3xl object-cover w-full h-full"
+                alt={post.title}
+                className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-110"
                 w="298"
               />
-            </Link>
-            <div className="w-2/3">
-              <div className="flex flex-wrap items-center gap-3 text-sm lg:text-base mb-3">
-                <span className="font-semibold">
-                  {(index + 2).toString().padStart(2, "0")}.
-                </span>
-                <CategoryPill category={post.category} />
-                {post.createdAt && (
-                  <span className="text-gray-500 text-sm">{format(post.createdAt)}</span>
-                )}
-              </div>
-              <Link
-                to={`/${post.slug}`}
-                className="text-base sm:text-lg xl:text-xl font-medium transition hover:text-blue-800"
-              >
-                {post.title}
-              </Link>
             </div>
-          </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="mb-2 flex flex-wrap items-center gap-2.5">
+                <Rank n={index + 2} />
+                <span className="tag">{post.category || "general"}</span>
+              </div>
+
+              <h3 className="font-display text-base font-bold leading-snug tracking-tight text-ink-950 transition group-hover:text-brand-800 sm:text-lg">
+                {post.title}
+              </h3>
+
+              <p className="meta mt-2 text-xs">
+                {authorName(post.user)}
+                {post.createdAt && ` · ${format(post.createdAt)}`}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
