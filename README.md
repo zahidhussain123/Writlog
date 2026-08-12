@@ -185,10 +185,6 @@ Slugs are generated from the title and de-duplicated with a numeric suffix (`my-
 | `frontend` | `npm run preview` | Serve the production build |
 | `frontend` | `npm run lint` | ESLint |
 
-## Acknowledgements
-
-The initial project scaffold and starter imagery came from [Lama Dev's MERN blog tutorial](https://github.com/safak). The application has since been substantially rewritten — querying, filtering and sorting, authentication handling, comments, error and loading states, and the UI.
-
 ## License
 
 ISC
