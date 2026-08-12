@@ -1,7 +1,7 @@
 {
-  "name": "Blog App",
+  "name": "writlog-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST API for Writlog, a MERN blog platform",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

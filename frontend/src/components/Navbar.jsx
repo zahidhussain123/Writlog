@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Image from "./Image";
 import { Link } from "react-router-dom";
 import { routePaths } from "../constants/pathRoute";
 import AuthHeader from "./authHeader";
@@ -21,8 +20,8 @@ const Navbar = () => {
         to={routePaths.HOME}
         className="flex items-center gap-4 text-2xl font-bold"
       >
-        <Image src="logo.png" alt="Zaidlog logo" w={32} h={32} />
-        <span>Zaidlog</span>
+        <img src="/logo.svg" alt="Writlog logo" width={32} height={32} className="h-8 w-8" />
+        <span>Writlog</span>
       </Link>
 
       {/* MOBILE MENU */}
