@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import ReactQuill from "react-quill-new";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createNewPost, fetchAllPosts } from "../utils/post.databank";
+import { useMutation } from "@tanstack/react-query";
+import { createNewPost } from "../utils/post.databank";
 import Upload from "../components/upload";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,19 +18,25 @@ const Write = () => {
   const { getToken } = useAuth();
   const navigate = useNavigate();
 
-  const { isLoading, isPending, data, error } = useQuery({
-    queryKey: ["posts"],
-    queryFn: () => fetchAllPosts(),
-  });
+
+  useEffect(() => {
+    if (img?.url) setValue((prev) => `${prev}<p><image src="${img.url}"/></p>`);
+  }, [img]);
+
+  useEffect(() => {
+    if (video?.url) {
+      setValue((prev) => `${prev}<p><iframe class="ql-video" src="${video.url}"/></p>`);
+    }
+  }, [video]);
 
   const mutation = useMutation({
-    mutationFn: (newPost) => {
-      return createNewPost(newPost, getToken);
-    },
+    mutationFn: (newPost) => createNewPost(newPost, getToken),
     onSuccess: (res) => {
-      console.log({ res });
       toast.success("Post has been created");
       navigate(`/${res.slug}`);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Could not create the post");
     },
   });
 
@@ -41,21 +47,23 @@ const Write = () => {
     return <div>Please sign in to write a post</div>;
   }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching posts</div>;
-  console.log({ data });
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const newPost = {
-      title: formData.get("title"),
+
+    const title = formData.get("title")?.trim();
+    if (!title) return toast.warn("Give your post a title");
+    if (!value?.replace(/<[^>]*>/g, "").trim()) {
+      return toast.warn("Write some content first");
+    }
+
+    mutation.mutate({
+      title,
       desc: formData.get("desc"),
       category: formData.get("category"),
       content: value,
-      img: cover.filePath || ""
-    };
-    console.log({ newPost });
-    mutation.mutate(newPost);
+      img: cover?.filePath || "",
+    });
   };
   return (
     <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">

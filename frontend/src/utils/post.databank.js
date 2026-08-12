@@ -1,43 +1,37 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const fetchAllPosts = async () => {
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts`);
-    return res.data;
-  } catch (error) {
-    throw new Error("Error fetching posts", error);
-  }
+  const res = await axios.get(`${BASE_URL}/posts`);
+  return res.data;
 };
 
 export const createNewPost = async (payload, getToken) => {
   const token = await getToken();
-  try {
-    const newPost = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/posts/post`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return newPost.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const res = await axios.post(`${BASE_URL}/posts/post`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
 };
 
 export const fetchInfinitePosts = async ({ pageParam = 1, queryKey }) => {
-  const limit = queryKey[1]; // Get limit from queryKey
-  const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts`, {
-    params: { page: pageParam, limit }
+  const [, limit, searchParams = {}] = queryKey;
+  const res = await axios.get(`${BASE_URL}/posts`, {
+    params: { page: pageParam, limit, ...searchParams },
+  });
+  return res.data;
+};
+
+export const fetchFeaturedPosts = async ({ queryKey }) => {
+  const [, limit = 4] = queryKey;
+  const res = await axios.get(`${BASE_URL}/posts`, {
+    params: { limit, sort: "popular" },
   });
   return res.data;
 };
 
 export const fetchSinglePost = async (slug) => {
-  const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts/${slug}`);
+  const res = await axios.get(`${BASE_URL}/posts/${slug}`);
   return res.data;
 };
-
-export const getPost = async (slug) => {};

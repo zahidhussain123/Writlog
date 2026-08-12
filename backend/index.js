@@ -9,13 +9,26 @@ import webHookRoutes from "./routes/webhook.route.js";
 import { connectDB } from "./lib/connectDB.js";
 import { clerkMiddleware, getAuth } from "@clerk/express";
 import cors from "cors";
-const app = express();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: process.env.CLIENT_URL }));
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+// Must stay above express.json(): svix needs the raw body to verify signatures.
 app.use("/webhooks", webHookRoutes);
+
 app.use(clerkMiddleware());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
@@ -38,24 +51,31 @@ app.use(
   }
 );
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+app.use((req, res) => {
+  res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
 });
 
 app.use((error, req, res, next) => {
-  res.json({
+  console.error(error);
+  res.status(error.status || 500).json({
     message: error.message || "Something went wrong",
-    status: res.status,
-    stack: res.stack,
+    stack: process.env.NODE_ENV === "production" ? undefined : error.stack,
   });
 });
 
-app.listen(process.env.port, () => {
-  connectDB();
-  console.log("Server is running on port 5000");
-});
+const start = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("\n❌ Could not start the server — the database is unreachable.");
+    console.error(`   ${error.message}\n`);
+    console.error("   Check MONGODB in backend/.env and that your Atlas cluster exists");
+    console.error("   and that this machine's IP is allowed in Atlas → Network Access.\n");
+    process.exit(1);
+  }
+};
+
+start();

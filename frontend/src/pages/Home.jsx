@@ -1,176 +1,154 @@
-import { ChevronRight, Home, Edit3, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronRight, Home, PenLine, Sparkles } from "lucide-react";
 import MainCategories from "../components/mainCategories";
 import FeaturedPosts from "../components/featuredPosts";
 import PostList from "../components/postList";
+import { routePaths } from "../constants/pathRoute";
 
 const Homepage = () => {
   return (
-    <div className="mt-8 flex flex-col gap-8">
-      {/* STUNNING BREADCRUMB */}
-      <div className="relative group">
-        {/* Multi-layer background effects */}
-        <div className="absolute -inset-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl blur-3xl opacity-20 animate-pulse group-hover:opacity-30 transition-opacity duration-700"></div>
-        <div
-          className="absolute -inset-2 bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-500 rounded-2xl blur-xl opacity-15 animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
+    <div className="mt-8 flex flex-col gap-12 pb-16">
+      {/* BREADCRUMB */}
+      <nav className="flex items-center gap-2 text-sm text-slate-500">
+        <Link
+          to={routePaths.HOME}
+          className="flex items-center gap-2 font-medium text-slate-700 transition hover:text-blue-800"
+        >
+          <Home size={16} />
+          Home
+        </Link>
+        <ChevronRight size={16} className="text-slate-400" />
+        <span className="text-blue-800">Blogs and Articles</span>
+      </nav>
 
-        {/* Breadcrumb container with enhanced glass effect */}
-        <nav className="relative bg-white/90 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/40 overflow-hidden">
-          {/* Top highlight */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+      {/* HERO */}
+      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 px-6 py-12 text-white shadow-xl md:px-12 md:py-16">
+        {/* soft light blooms */}
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-500/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-indigo-400/20 blur-3xl" />
 
-          <div className="flex items-center gap-3 px-8 py-5">
-            {/* Enhanced Home button */}
-            <button className="group/btn relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl transform scale-0 group-hover/btn:scale-100 transition-transform duration-500"></div>
-              <div className="relative flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-2xl shadow-xl transform hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/40">
-                <Home size={22} className="drop-shadow-lg" />
-                <span className="drop-shadow-sm">Home</span>
-                {/* Enhanced shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 rounded-2xl"></div>
-                {/* Inner glow */}
-                <div className="absolute inset-1 bg-gradient-to-r from-blue-400/50 to-purple-500/50 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"></div>
-              </div>
-            </button>
-
-            {/* Enhanced separator */}
-            <div className="relative">
-              <ChevronRight
-                className="text-gray-400 drop-shadow-sm animate-pulse hover:text-purple-500 transition-colors duration-300"
-                size={28}
-              />
-              <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-md opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-
-            {/* Enhanced current page */}
-            <div className="relative group/current overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-100/80 via-purple-100/80 to-pink-100/80 rounded-2xl"></div>
-              <div className="relative flex items-center gap-4 px-8 py-4 backdrop-blur-sm rounded-2xl border border-purple-200/60 shadow-inner">
-                <Edit3 size={22} className="text-indigo-600 drop-shadow-sm" />
-                <span className="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 bg-clip-text text-transparent font-bold text-lg drop-shadow-sm">
-                  Blogs and Articles
-                </span>
-                {/* Subtle animation */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-200/30 to-transparent -translate-x-full group-hover/current:translate-x-full transition-transform duration-1500 rounded-2xl"></div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-
-      {/* ENHANCED INTRODUCTION */}
-      <div className="flex items-center justify-between gap-8">
-        {/* Titles */}
-        <div className="max-w-4xl">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-8">
-            <span
-              className="bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent block drop-shadow-lg animate-pulse"
-              style={{ animationDuration: "3s" }}
-            >
-              Lorem ipsum dolor sit,
+        <div className="relative flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-blue-100 ring-1 ring-white/20">
+              <Sparkles size={14} />
+              Fresh stories every week
             </span>
-            <span
-              className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent block drop-shadow-lg animate-pulse"
-              style={{ animationDelay: "1s", animationDuration: "3s" }}
-            >
-              amet consectetur
-            </span>
-            <span
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent block drop-shadow-lg animate-pulse"
-              style={{ animationDelay: "2s", animationDuration: "3s" }}
-            >
-              adipisicing elit.
-            </span>
-          </h1>
-          <div className="relative">
-            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed max-w-3xl font-medium">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sequi
-              rerum accusantium labore distinctio magnam temporibus.
+
+            <h1 className="mt-6 text-4xl font-black leading-tight tracking-tight md:text-5xl lg:text-6xl">
+              Ideas worth
+              <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-200 bg-clip-text text-transparent">
+                {" "}
+                reading,
+              </span>
+              <br />
+              stories worth sharing.
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-blue-100/90 md:text-lg">
+              Deep dives on web design, development, databases and everything in
+              between — written by people who build for the web every day.
             </p>
-            {/* Subtle underline effect */}
-            <div className="absolute bottom-0 left-0 w-32 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-4 opacity-60"></div>
-          </div>
-        </div>
 
-        {/* Enhanced animated button */}
-        <div className="hidden md:block relative group cursor-pointer">
-          {/* Multi-layer glow effects */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-all duration-700 animate-pulse"></div>
-          <div className="absolute inset-2 bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 rounded-full blur-2xl opacity-15 group-hover:opacity-30 transition-all duration-500"></div>
-
-          {/* Rotating text with enhanced styling */}
-          <svg
-            viewBox="0 0 220 220"
-            width="220"
-            height="220"
-            className="animate-spin group-hover:animate-pulse transition-all duration-700 drop-shadow-2xl"
-            style={{ animationDuration: "25s" }}
-          >
-            <defs>
-              <linearGradient
-                id="textGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                to={routePaths.POSTS}
+                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-slate-900 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
               >
-                <stop offset="0%" stopColor="#1E40AF" />
-                <stop offset="25%" stopColor="#3B82F6" />
-                <stop offset="50%" stopColor="#8B5CF6" />
-                <stop offset="75%" stopColor="#EC4899" />
-                <stop offset="100%" stopColor="#F59E0B" />
-              </linearGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            <path
-              id="circlePath"
-              fill="none"
-              d="M 110, 110 m -85, 0 a 85,85 0 1,1 170,0 a 85,85 0 1,1 -170,0"
-            />
-            <text
-              fill="url(#textGradient)"
-              className="text-sm font-black tracking-[0.2em] uppercase"
-              filter="url(#glow)"
+                Browse all posts
+                <ArrowRight size={18} />
+              </Link>
+              <Link
+                to={routePaths.WRITE}
+                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+              >
+                <PenLine size={18} />
+                Start writing
+              </Link>
+            </div>
+          </div>
+
+          {/* Rotating write-a-story badge */}
+          <Link
+            to={routePaths.WRITE}
+            className="group relative hidden shrink-0 md:block"
+            aria-label="Write your story"
+          >
+            <svg
+              viewBox="0 0 200 200"
+              width="200"
+              height="200"
+              className="animate-spin text-blue-100"
+              style={{ animationDuration: "22s" }}
             >
-              <textPath href="#circlePath" startOffset="0%">
-                ✦ Write your story ✦
-              </textPath>
-              <textPath href="#circlePath" startOffset="50%">
-                ✦ Share your idea ✦
-              </textPath>
-            </text>
-          </svg>
+              <path
+                id="circlePath"
+                fill="none"
+                d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
+              />
+              <text fill="currentColor" className="text-[13px] font-semibold tracking-[0.25em] uppercase">
+                <textPath href="#circlePath" startOffset="0%">
+                  • Write your story
+                </textPath>
+                <textPath href="#circlePath" startOffset="50%">
+                  • Share your idea
+                </textPath>
+              </text>
+            </svg>
 
-          {/* Enhanced center button */}
-          <button className="absolute top-0 left-0 right-0 bottom-0 m-auto w-28 h-28 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all duration-500 overflow-hidden border-4 border-white/20">
-            {/* Multiple inner layers */}
-            <div className="absolute inset-1 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full opacity-90"></div>
-            <div className="absolute inset-3 bg-gradient-to-br from-blue-400/60 to-purple-400/60 rounded-full group-hover:animate-pulse"></div>
-
-            {/* Enhanced icon */}
-            <ArrowRight className="w-10 h-10 text-white relative z-10 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 drop-shadow-lg" />
-
-            {/* Enhanced shimmer */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 rounded-full"></div>
-
-            {/* Pulsing ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-white/40 animate-ping group-hover:border-white/60"></div>
-          </button>
+            <span className="absolute inset-0 m-auto flex h-24 w-24 items-center justify-center rounded-full bg-white text-slate-900 shadow-2xl transition duration-300 group-hover:scale-110">
+              <ArrowRight
+                size={32}
+                className="transition duration-300 group-hover:translate-x-1"
+              />
+            </span>
+          </Link>
         </div>
-      </div>
-        <MainCategories />
+      </section>
+
+      {/* CATEGORIES */}
+      <MainCategories />
+
+      {/* FEATURED */}
+      <section>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">
+              Featured Posts
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              The most-read stories on the blog right now.
+            </p>
+          </div>
+          <Link
+            to="/posts?sort=popular"
+            className="hidden shrink-0 items-center gap-1 text-sm font-medium text-blue-800 hover:underline sm:flex"
+          >
+            See all <ArrowRight size={14} />
+          </Link>
+        </div>
         <FeaturedPosts />
-         <div className="">
-        <h1 className="my-8 text-2xl text-gray-600">Recent Posts</h1>
+      </section>
+
+      {/* RECENT */}
+      <section>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">
+              Recent Posts
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Hot off the press, newest first.
+            </p>
+          </div>
+          <Link
+            to={routePaths.POSTS}
+            className="hidden shrink-0 items-center gap-1 text-sm font-medium text-blue-800 hover:underline sm:flex"
+          >
+            See all <ArrowRight size={14} />
+          </Link>
+        </div>
         <PostList />
-      </div>
+      </section>
     </div>
   );
 };

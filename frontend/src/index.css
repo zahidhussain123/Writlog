@@ -7,18 +7,82 @@ body {
   width: 100vw;
   overflow-x: hidden;
   font-family: "Montserrat", sans-serif;
+  color: #0f172a;
 }
 
-.animatedButton{
+.animatedButton {
   animation-duration: 10000ms;
 }
 
-.ql-container{
+.ql-container {
   border: none !important;
 }
-.ql-toolbar{
+.ql-toolbar {
   border: none !important;
 }
-.ql-editor{
+.ql-editor {
   border: none !important;
+}
+
+.prose-blog {
+  line-height: 1.8;
+  color: #334155;
+}
+.prose-blog > * + * {
+  margin-top: 1.15rem;
+}
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3 {
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+  margin-top: 2rem;
+}
+.prose-blog h1 {
+  font-size: 1.875rem;
+}
+.prose-blog h2 {
+  font-size: 1.5rem;
+}
+.prose-blog h3 {
+  font-size: 1.25rem;
+}
+.prose-blog a {
+  color: #1e40af;
+  text-decoration: underline;
+}
+.prose-blog ul,
+.prose-blog ol {
+  padding-left: 1.5rem;
+}
+.prose-blog ul {
+  list-style: disc;
+}
+.prose-blog ol {
+  list-style: decimal;
+}
+.prose-blog blockquote {
+  border-left: 4px solid #c7d2fe;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #475569;
+}
+.prose-blog img,
+.prose-blog image,
+.prose-blog iframe {
+  display: block;
+  max-width: 100%;
+  border-radius: 1rem;
+}
+.prose-blog iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+.prose-blog pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
 }

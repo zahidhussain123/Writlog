@@ -1,99 +1,102 @@
 import { Link } from "react-router-dom";
-import Image from "./Image";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "timeago.js";
+import Image from "./Image";
+import { fetchFeaturedPosts } from "../utils/post.databank";
 
-const posts = [
-  {
-    id: 1,
-    slug: "first-post",
-    title: "Exploring the Future of AI in Everyday Life",
-    category: "Technology",
-    img: "https://picsum.photos/id/1015/800/600",
-    createdAt: new Date(),
-  },
-  {
-    id: 2,
-    slug: "second-post",
-    title: "Top 10 Tips for Becoming a Better Programmer",
-    category: "Programming",
-    img: "https://picsum.photos/id/1025/600/400",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-  },
-  {
-    id: 3,
-    slug: "third-post",
-    title: "The Rise of Remote Work and Digital Nomads",
-    category: "Lifestyle",
-    img: "https://picsum.photos/id/1035/600/400",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-  },
-  {
-    id: 4,
-    slug: "fourth-post",
-    title: "Understanding Blockchain Beyond Cryptocurrency",
-    category: "Finance",
-    img: "https://picsum.photos/id/1045/600/400",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
-  },
-];
+const FeaturedSkeleton = () => (
+  <div className="mt-8 flex flex-col lg:flex-row gap-8 animate-pulse">
+    <div className="w-full lg:w-1/2 flex flex-col gap-4">
+      <div className="h-72 rounded-3xl bg-slate-200" />
+      <div className="h-4 w-1/3 rounded-full bg-slate-200" />
+      <div className="h-7 w-4/5 rounded-full bg-slate-200" />
+    </div>
+    <div className="w-full lg:w-1/2 flex flex-col gap-6">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="flex gap-4">
+          <div className="w-1/3 aspect-video rounded-3xl bg-slate-200" />
+          <div className="w-2/3 flex flex-col gap-3">
+            <div className="h-3 w-1/2 rounded-full bg-slate-200" />
+            <div className="h-5 w-full rounded-full bg-slate-200" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const CategoryPill = ({ category }) => (
+  <Link
+    to={`/posts?cat=${category || "general"}`}
+    className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-800 transition hover:bg-blue-200"
+  >
+    {category || "general"}
+  </Link>
+);
 
 const FeaturedPosts = () => {
-  if (!posts || posts.length === 0) return null;
+  const { data, status } = useQuery({
+    queryKey: ["featuredPosts", 4],
+    queryFn: fetchFeaturedPosts,
+  });
+
+  if (status === "pending") return <FeaturedSkeleton />;
+
+  const posts = data?.posts ?? [];
+  if (status === "error" || posts.length === 0) return null;
+
+  const [lead, ...rest] = posts;
 
   return (
     <div className="mt-8 flex flex-col lg:flex-row gap-8">
-      {/* First (highlighted) */}
+      {/* Lead story */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        {/* image */}
-        {posts[0].img && (
+        <Link to={`/${lead.slug}`} className="group overflow-hidden rounded-3xl">
           <Image
-            src={"featured1.jpeg"}
-            className="rounded-3xl object-cover"
+            src={lead.img || "featured1.jpeg"}
+            className="rounded-3xl object-cover w-full transition duration-500 group-hover:scale-105"
             w="895"
           />
-        )}
-        {/* details */}
-        <div className="flex items-center gap-4">
-          <h1 className="font-semibold lg:text-lg">01.</h1>
-          <Link className="text-blue-800 lg:text-lg">{posts[0].category}</Link>
-          <span className="text-gray-500">{format(posts[0].createdAt)}</span>
+        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="font-semibold lg:text-lg">01.</span>
+          <CategoryPill category={lead.category} />
+          {lead.createdAt && (
+            <span className="text-gray-500 text-sm">{format(lead.createdAt)}</span>
+          )}
         </div>
-        {/* title */}
         <Link
-          to={posts[0].slug}
-          className="text-xl lg:text-3xl font-semibold lg:font-bold"
+          to={`/${lead.slug}`}
+          className="text-xl lg:text-3xl font-semibold lg:font-bold transition hover:text-blue-800"
         >
-          {posts[0].title}
+          {lead.title}
         </Link>
       </div>
 
-      {/* Others */}
+      {/* Runners-up */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        {posts.slice(1).map((post, index) => (
-          <div key={post.id} className="lg:h-1/3 flex justify-between gap-4">
-            {post.img && (
-              <div className="w-1/3 aspect-video">
-                <Image
-                  src={"featured2.jpeg"}
-                  className="rounded-3xl object-cover w-full h-full"
-                  w="298"
-                />
-              </div>
-            )}
-            {/* details and title */}
+        {rest.map((post, index) => (
+          <div key={post._id} className="lg:h-1/3 flex justify-between gap-4">
+            <Link to={`/${post.slug}`} className="w-1/3 aspect-video shrink-0">
+              <Image
+                src={post.img || "featured2.jpeg"}
+                className="rounded-3xl object-cover w-full h-full"
+                w="298"
+              />
+            </Link>
             <div className="w-2/3">
-              <div className="flex items-center gap-4 text-sm lg:text-base mb-4">
-                <h1 className="font-semibold">
+              <div className="flex flex-wrap items-center gap-3 text-sm lg:text-base mb-3">
+                <span className="font-semibold">
                   {(index + 2).toString().padStart(2, "0")}.
-                </h1>
-                <Link className="text-blue-800">{post.category}</Link>
-                <span className="text-gray-500 text-sm">
-                  {format(post.createdAt)}
                 </span>
+                <CategoryPill category={post.category} />
+                {post.createdAt && (
+                  <span className="text-gray-500 text-sm">{format(post.createdAt)}</span>
+                )}
               </div>
               <Link
-                to={post.slug}
-                className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl font-medium"
+                to={`/${post.slug}`}
+                className="text-base sm:text-lg xl:text-xl font-medium transition hover:text-blue-800"
               >
                 {post.title}
               </Link>

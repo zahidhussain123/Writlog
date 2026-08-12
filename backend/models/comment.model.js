@@ -12,14 +12,6 @@ const commentSchema = new Schema(
       ref: "Post",
       required: true,
     },
-    postId: {
-      type: String,
-      required: true,
-    },
-    username: {
-      type: String,
-      required: true,
-    },
     desc: {
       type: String,
       required: true,
