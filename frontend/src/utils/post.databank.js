@@ -52,8 +52,21 @@ export const fetchFeaturedPosts = async ({ queryKey }) => {
   return { ...data, posts: [...featured, ...filler].slice(0, limit) };
 };
 
-export const fetchSinglePost = async (slug) => {
-  const res = await axios.get(`${BASE_URL}/posts/${slug}`);
+
+export const fetchSinglePost = async (slug, getToken) => {
+  const token = getToken ? await getToken() : null;
+  const res = await axios.get(`${BASE_URL}/posts/${slug}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  return res.data;
+};
+
+
+export const toggleLikePost = async (id, getToken) => {
+  const token = await getToken();
+  const res = await axios.post(`${BASE_URL}/posts/post/${id}/like`, null, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return res.data;
 };
 

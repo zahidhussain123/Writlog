@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "timeago.js";
-import { Clock, Eye } from "lucide-react";
+import { Clock, Eye, Heart } from "lucide-react";
 import Image from "./Image";
 import { fetchFeaturedPosts } from "../utils/post.databank";
 import { formatCount, readingTime } from "../utils/readingTime";
@@ -106,6 +106,15 @@ const FeaturedPosts = () => {
                 <span className="inline-flex items-center gap-1.5">
                   <Eye size={12} />
                   {formatCount(lead.visit)}
+                </span>
+              </>
+            )}
+            {lead.likeCount > 0 && (
+              <>
+                <span className="divider-dot bg-white/40" />
+                <span className="inline-flex items-center gap-1.5">
+                  <Heart size={12} />
+                  {formatCount(lead.likeCount)}
                 </span>
               </>
             )}

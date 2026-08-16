@@ -14,6 +14,29 @@ const SORT_OPTIONS = {
 
 const TRENDING_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * The Mongo id behind the current session, or null when nobody is signed in.
+ *
+ * Deliberately a plain lookup rather than `ensureUser`: this runs on every read
+ * and a missing row only means the reader has liked nothing yet.
+ */
+const getViewerId = async (req) => {
+  const { userId: clerkId } = getAuth(req);
+  if (!clerkId) return null;
+  const viewer = await userModel.findOne({ clerkId }).select("_id");
+  return viewer?._id ?? null;
+};
+
+
+const withLikeState = (post, viewerId) => {
+  const { likes = [], ...rest } = post.toObject ? post.toObject() : post;
+  return {
+    ...rest,
+    likeCount: likes.length,
+    isLiked: viewerId ? likes.some((id) => id.equals(viewerId)) : false,
+  };
+};
+
 const slugify = (title) =>
   title
     .toLowerCase()
@@ -59,7 +82,13 @@ export const getPosts = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    res.status(200).json({ posts, hasMore: page * limit < totalPosts, totalPosts });
+    const viewerId = await getViewerId(req);
+
+    res.status(200).json({
+      posts: posts.map((post) => withLikeState(post, viewerId)),
+      hasMore: page * limit < totalPosts,
+      totalPosts,
+    });
   } catch (error) {
     console.error("getPosts failed:", error);
     res.status(500).json({ message: "Error fetching posts", error: error.message });
@@ -86,7 +115,7 @@ export const getPost = async (req, res) => {
       post.visit += 1;
     }
 
-    res.status(200).json(post);
+    res.status(200).json(withLikeState(post, await getViewerId(req)));
   } catch (error) {
     console.error("getPost failed:", error);
     res.status(500).json({ message: "Error fetching post", error: error.message });
@@ -202,7 +231,11 @@ export const updatePost = async (req, res) => {
       .findByIdAndUpdate(id, updates, { new: true })
       .populate("user", "username displayName img clerkId");
 
-    res.status(200).json(updated);
+    if (!updated) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json(withLikeState(updated, await getViewerId(req)));
   } catch (error) {
     console.error("updatePost failed:", error);
     res.status(500).json({ message: "Error updating post", error: error.message });
@@ -245,6 +278,58 @@ export const deletePost = async (req, res) => {
   } catch (error) {
     console.error("deletePost failed:", error);
     res.status(500).json({ message: "Error deleting post", error: error.message });
+  }
+};
+
+/**
+ * Toggles the signed-in reader's like on a post.
+ *
+ * The write is guarded on the reader's current state (`$ne` to like, a match to
+ * unlike) so a double-tap or two tabs racing each other can only ever land one
+ * like. When the guard misses, someone else already applied the same change, so
+ * the state we read back is the answer.
+ */
+export const toggleLike = async (req, res) => {
+  try {
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) {
+      return res.status(401).json({ message: "Please sign in to like posts" });
+    }
+
+    const user = await ensureUser(clerkId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found. Please sign in again." });
+    }
+
+    const { id } = req.params;
+    const post = await postModel.findById(id).select("likes");
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const liked = post.likes.some((likerId) => likerId.equals(user._id));
+
+    const updated = await postModel
+      .findOneAndUpdate(
+        liked
+          ? { _id: id, likes: user._id }
+          : { _id: id, likes: { $ne: user._id } },
+        liked
+          ? { $pull: { likes: user._id } }
+          : { $addToSet: { likes: user._id } },
+        { new: true }
+      )
+      .select("likes");
+
+    const likes = (updated ?? post).likes;
+
+    res.status(200).json({
+      likeCount: likes.length,
+      isLiked: likes.some((likerId) => likerId.equals(user._id)),
+    });
+  } catch (error) {
+    console.error("toggleLike failed:", error);
+    res.status(500).json({ message: "Error updating like", error: error.message });
   }
 };
 

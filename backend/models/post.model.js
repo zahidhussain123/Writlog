@@ -38,6 +38,13 @@ const postSchema = new Schema(
       type: Number,
       default: 0,
     },
+    // Who liked the post, not just how many. Storing the ids is what lets the
+    // reader see their own like reflected and keeps the toggle idempotent.
+    likes: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+      index: true,
+    },
   },
   { timestamps: true }
 );

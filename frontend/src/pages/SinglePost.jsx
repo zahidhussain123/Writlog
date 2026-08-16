@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { format } from "timeago.js";
 import {
   ArrowLeft,
   ChevronRight,
   Clock,
   Eye,
+  Heart,
   Home,
   Star,
   TriangleAlert,
@@ -17,6 +19,7 @@ import SharePost from "../components/sharePost";
 import ReadingProgress from "../components/readingProgress";
 import DeletePostButton from "../components/deletePostButton";
 import FeaturePostButton from "../components/featurePostButton";
+import LikeButton from "../components/likeButton";
 import EditPostLink from "../components/editPostLink";
 import { fetchSinglePost } from "../utils/post.databank";
 import { formatCount, readingTime } from "../utils/readingTime";
@@ -44,13 +47,21 @@ const SinglePostSkeleton = () => (
 
 const SinglePostPage = () => {
   const { slug } = useParams();
+  const { getToken } = useAuth();
+  const { user, isLoaded } = useUser();
+
+
+  const postQueryKey = ["post", slug, user?.id ?? "guest"];
 
   const { isPending, error, data } = useQuery({
-    queryKey: ["post", slug],
-    queryFn: () => fetchSinglePost(slug),
+    queryKey: postQueryKey,
+    queryFn: () => fetchSinglePost(slug, getToken),
+    // Waiting for Clerk avoids a throwaway signed-out fetch on first paint.
+    enabled: isLoaded,
     retry: false,
   });
 
+  // A disabled query still reads as pending, so this covers the Clerk wait too.
   if (isPending) return <SinglePostSkeleton />;
 
   if (error) {
@@ -172,9 +183,21 @@ const SinglePostPage = () => {
               </span>
             </>
           )}
+
+          {data.likeCount > 0 && (
+            <>
+              <span className="divider-dot" />
+              <span className="meta inline-flex items-center gap-1.5 text-sm">
+                <Heart size={14} />
+                {formatCount(data.likeCount)}{" "}
+                {data.likeCount === 1 ? "like" : "likes"}
+              </span>
+            </>
+          )}
         </div>
 
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <LikeButton post={data} queryKey={postQueryKey} />
           <SharePost title={data.title} />
           <EditPostLink post={data} />
           <FeaturePostButton post={data} />

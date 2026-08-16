@@ -5,6 +5,7 @@ import {
   createPost,
   updatePost,
   deletePost,
+  toggleLike,
   uploadImage,
 } from "../controller/post.controller.js";
 
@@ -15,6 +16,7 @@ router.get("/", getPosts);
 router.get("/:slug", getPost);
 router.post("/post", createPost);
 router.patch("/post/:id", updatePost);
+router.post("/post/:id/like", toggleLike);
 router.delete("/post/:id", deletePost);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { format } from "timeago.js";
-import { ArrowUpRight, Clock, Eye } from "lucide-react";
+import { ArrowUpRight, Clock, Eye, Heart } from "lucide-react";
 import Image from "./Image";
 import { formatCount, readingTime } from "../utils/readingTime";
 import { authorHandle, authorInitials, authorName } from "../utils/author";
@@ -98,6 +98,17 @@ const PostListItem = ({ post }) => {
               <span className="meta inline-flex items-center gap-1.5 text-xs">
                 <Eye size={13} />
                 {formatCount(post.visit)}
+              </span>
+            </>
+          )}
+
+          {/* Read-only here; liking happens on the post itself. */}
+          {post.likeCount > 0 && (
+            <>
+              <span className="divider-dot" />
+              <span className="meta inline-flex items-center gap-1.5 text-xs">
+                <Heart size={13} />
+                {formatCount(post.likeCount)}
               </span>
             </>
           )}
