@@ -41,7 +41,7 @@ const FeaturePostButton = ({ post, className = "" }) => {
       className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition disabled:opacity-60 ${
         featured
           ? "border-accent-500/25 bg-accent-100 text-accent-600 hover:bg-accent-100/70"
-          : "border-ink-900/10 bg-white/70 text-ink-500 hover:border-accent-500/25 hover:bg-accent-100/60 hover:text-accent-600"
+          : "border-ink-900/10 bg-surface/70 text-ink-500 hover:border-accent-500/25 hover:bg-accent-100/60 hover:text-accent-600"
       } ${className}`}
     >
       {mutation.isPending ? (

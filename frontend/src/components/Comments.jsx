@@ -78,7 +78,7 @@ const Comments = ({ postId }) => {
               <img
                 src={user.imageUrl}
                 alt=""
-                className="mt-1 h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white"
+                className="mt-1 h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-surface"
               />
             )}
             <textarea

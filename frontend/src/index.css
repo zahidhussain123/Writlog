@@ -2,12 +2,179 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------------------------------------------------------------------------
-   BASE
-   --------------------------------------------------------------------------- */
+
 @layer base {
   :root {
     --nav-h: 4rem;
+
+    /*  Page + panels  */
+    --c-paper: 250 249 246;
+    --c-paper-soft: 242 241 236;
+    --c-paper-deep: 232 231 224;
+    --c-surface: 255 255 255;
+    --c-surface-soft: 251 251 249;
+    --c-surface-high: 255 255 255;
+
+    /* --- Ink: dark text on a light ground --- */
+    --c-ink-50: 245 247 246;
+    --c-ink-100: 234 238 236;
+    --c-ink-200: 216 222 220;
+    --c-ink-300: 184 192 190;
+    --c-ink-400: 142 152 149;
+    --c-ink-500: 104 114 111;
+    --c-ink-600: 80 90 87;
+    --c-ink-700: 62 71 69;
+    --c-ink-800: 40 48 46;
+    --c-ink-900: 22 28 27;
+    --c-ink-950: 10 15 14;
+
+    /* --- Brand: jade --- */
+    --c-brand-50: 235 251 243;
+    --c-brand-100: 205 244 226;
+    --c-brand-200: 157 232 199;
+    --c-brand-300: 100 213 166;
+    --c-brand-400: 51 188 135;
+    --c-brand-500: 23 158 110;
+    --c-brand-600: 12 128 89;
+    --c-brand-700: 10 102 72;
+    --c-brand-800: 12 81 58;
+    --c-brand-900: 12 66 49;
+    --c-brand-950: 4 37 27;
+
+    /* --- Accent: warm clay --- */
+    --c-accent-50: 254 244 240;
+    --c-accent-100: 253 231 222;
+    --c-accent-200: 249 203 184;
+    --c-accent-300: 243 172 144;
+    --c-accent-400: 236 138 105;
+    --c-accent-500: 223 108 72;
+    --c-accent-600: 191 83 52;
+    --c-accent-700: 153 66 42;
+
+    --c-on-brand: 255 255 255;
+    --c-line: 222 227 225;
+
+    /* --- Status --- */
+    --c-red-50: 254 242 242;
+    --c-red-100: 254 226 226;
+    --c-red-500: 239 68 68;
+    --c-red-600: 220 38 38;
+    --c-red-700: 185 28 28;
+    --c-rose-50: 255 241 242;
+    --c-rose-100: 255 228 230;
+    --c-rose-500: 244 63 94;
+    --c-rose-600: 225 29 72;
+    --c-rose-700: 190 18 60;
+
+    /* --- Effects --- */
+    --shadow: 10 15 14;
+    --shadow-a1: 0.04;
+    --shadow-a2: 0.1;
+    --shadow-a3: 0.28;
+    --shadow-a4: 0.38;
+    --grid-line: 10 15 14;
+    --grid-a: 0.05;
+    --sheen-inner: 255 255 255;
+    --sheen-inner-a: 0.65;
+
+    /* Ambient blooms behind the page. */
+    --bloom-1: 23 158 110;
+    --bloom-1-a: 0.13;
+    --bloom-2: 223 108 72;
+    --bloom-2-a: 0.11;
+
+    /* --- Fixed across themes: dark surfaces stay dark --- */
+    --c-sheen-start: 4 37 27;
+    --c-sheen-mid: 12 81 58;
+    --c-sheen-end: 23 158 110;
+    --c-sheen-100: 198 245 229;
+    --c-sheen-200: 155 235 209;
+    --c-sheen-300: 106 221 184;
+    --c-flare: 243 172 144;
+    --c-scrim: 6 11 10;
+    --c-ondark-bg: 255 255 255;
+    --c-ondark-fg: 10 15 14;
+    --c-code-bg: 8 14 12;
+    --c-code-fg: 220 230 226;
+
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    --c-paper: 10 14 13;
+    --c-paper-soft: 16 22 21;
+    --c-paper-deep: 22 30 28;
+    --c-surface: 20 27 25;
+    --c-surface-soft: 16 23 21;
+    --c-surface-high: 27 36 34;
+
+    /* Ink reverses: 950 is now the lightest, 50 the closest to the page. */
+    --c-ink-50: 19 26 24;
+    --c-ink-100: 26 34 32;
+    --c-ink-200: 38 49 48;
+    --c-ink-300: 61 73 71;
+    --c-ink-400: 94 106 103;
+    --c-ink-500: 126 138 135;
+    --c-ink-600: 155 166 163;
+    --c-ink-700: 184 193 191;
+    --c-ink-800: 211 218 216;
+    --c-ink-900: 233 238 236;
+    --c-ink-950: 245 248 247;
+
+    /* Brand reverses too, so `bg-brand-50` stays a faint tint and
+       `text-brand-700` stays a legible link colour. */
+    --c-brand-50: 7 33 24;
+    --c-brand-100: 10 46 34;
+    --c-brand-200: 15 70 52;
+    --c-brand-300: 22 103 76;
+    --c-brand-400: 29 138 102;
+    --c-brand-500: 42 174 130;
+    --c-brand-600: 63 203 155;
+    --c-brand-700: 106 221 184;
+    --c-brand-800: 155 235 209;
+    --c-brand-900: 198 245 229;
+    --c-brand-950: 231 252 245;
+
+    --c-accent-50: 34 17 10;
+    --c-accent-100: 58 29 17;
+    --c-accent-200: 90 46 27;
+    --c-accent-300: 138 71 40;
+    --c-accent-400: 196 101 58;
+    --c-accent-500: 224 126 82;
+    --c-accent-600: 240 153 122;
+    --c-accent-700: 247 188 164;
+
+    /* Jade is bright in dark mode, so filled brand surfaces take dark text. */
+    --c-on-brand: 4 30 21;
+    --c-line: 40 51 50;
+
+    --c-red-50: 43 20 22;
+    --c-red-100: 61 26 29;
+    --c-red-500: 240 87 92;
+    --c-red-600: 239 97 102;
+    --c-red-700: 245 138 142;
+    --c-rose-50: 44 18 25;
+    --c-rose-100: 62 24 35;
+    --c-rose-500: 242 84 122;
+    --c-rose-600: 247 111 145;
+    --c-rose-700: 250 147 172;
+
+    --shadow: 0 0 0;
+    --shadow-a1: 0.3;
+    --shadow-a2: 0.5;
+    --shadow-a3: 0.66;
+    --shadow-a4: 0.78;
+    --grid-line: 245 248 247;
+    --grid-a: 0.055;
+    --sheen-inner: 255 255 255;
+    --sheen-inner-a: 0.08;
+
+    --bloom-1: 42 174 130;
+    --bloom-1-a: 0.14;
+    --bloom-2: 224 126 82;
+    --bloom-2-a: 0.09;
+
+    color-scheme: dark;
   }
 
   @media (min-width: 768px) {
@@ -17,7 +184,7 @@
   }
 
   * {
-    @apply border-ink-200;
+    @apply border-line;
   }
 
   html {
@@ -29,18 +196,20 @@
     @apply bg-paper font-sans text-ink-800 antialiased;
     width: 100%;
     overflow-x: hidden;
-    /* Two very soft brand blooms over warm paper, replacing the flat lavender. */
+    /* Two soft blooms over the page ground. */
     background-image: radial-gradient(
         60rem 40rem at 12% -10%,
-        rgba(110, 99, 231, 0.14),
+        rgb(var(--bloom-1) / var(--bloom-1-a)),
         transparent 60%
       ),
       radial-gradient(
         50rem 34rem at 92% 4%,
-        rgba(242, 180, 68, 0.13),
+        rgb(var(--bloom-2) / var(--bloom-2-a)),
         transparent 62%
       );
     background-attachment: fixed;
+    /* Theme switches shouldn't strobe. */
+    transition: background-color 0.35s ease, color 0.35s ease;
   }
 
   h1,
@@ -48,7 +217,6 @@
   h3,
   h4 {
     @apply font-display text-ink-950;
-    font-variation-settings: "SOFT" 0, "WONK" 0;
     text-wrap: balance;
   }
 
@@ -95,25 +263,44 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
+/* ===========================================================================
    COMPONENTS: the shared vocabulary every page pulls from
-   --------------------------------------------------------------------------- */
+   =========================================================================== */
 @layer components {
+  /* --- Layout shell -------------------------------------------------------
+     One gutter definition, used by the nav, the main column and the footer,
+     so everything lines up on the same vertical rules. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-4 sm:px-6 lg:px-10 2xl:px-16;
+  }
+
+  /* Breaks a block out of the shell to the full viewport width. */
+  .bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  /* Vertical rhythm between the major bands of a page. */
+  .stack-page {
+    @apply flex flex-col gap-20 pb-10 pt-6 md:gap-28 md:pt-10;
+  }
+
   /* --- Surfaces --- */
-  .surface {
-    @apply rounded-3xl border border-ink-900/[0.06] bg-white/80 shadow-soft backdrop-blur-sm;
+  .surface-panel {
+    @apply rounded-3xl border border-ink-900/[0.07] bg-surface/80 shadow-soft backdrop-blur-sm;
   }
 
   .card {
-    @apply rounded-3xl border border-ink-900/[0.06] bg-white/75 shadow-soft backdrop-blur-sm transition duration-300;
+    @apply rounded-3xl border border-ink-900/[0.07] bg-surface/75 shadow-soft backdrop-blur-sm transition duration-300;
   }
 
   .card-interactive {
-    @apply card hover:-translate-y-1 hover:border-ink-900/[0.09] hover:bg-white hover:shadow-card;
+    @apply card hover:-translate-y-1 hover:border-brand-500/25 hover:bg-surface hover:shadow-card;
   }
 
   .glass-bar {
-    @apply border border-white/60 bg-white/70 shadow-glass backdrop-blur-xl backdrop-saturate-150;
+    @apply border border-ink-900/[0.07] bg-surface/70 shadow-glass backdrop-blur-xl backdrop-saturate-150;
   }
 
   /* --- Type --- */
@@ -122,15 +309,24 @@
   }
 
   .display-hero {
-    @apply font-display text-4xl font-black leading-[1.05] tracking-tight md:text-6xl lg:text-[4.25rem];
+    @apply font-display text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.03em] md:text-6xl lg:text-[4.5rem];
   }
 
   .section-title {
-    @apply font-display text-3xl font-bold tracking-tight text-ink-950 md:text-4xl;
+    @apply font-display text-3xl font-bold tracking-[-0.02em] text-ink-950 md:text-[2.5rem];
   }
 
   .lede {
     @apply text-base leading-relaxed text-ink-600 md:text-lg;
+  }
+
+  /* A labelled rule that opens a section. */
+  .section-rule {
+    @apply flex items-center gap-4;
+  }
+  .section-rule::after {
+    content: "";
+    @apply h-px flex-1 bg-gradient-to-r from-ink-900/15 to-transparent;
   }
 
   /* Underline that wipes in from the left on hover. */
@@ -151,44 +347,56 @@
   }
 
   .btn-primary {
-    @apply btn bg-ink-950 text-white shadow-soft hover:-translate-y-0.5 hover:bg-brand-800 hover:shadow-card;
+    @apply btn bg-ink-950 text-paper shadow-soft hover:-translate-y-0.5 hover:bg-brand-700 hover:text-onbrand hover:shadow-card;
   }
 
   .btn-brand {
-    @apply btn bg-brand-600 text-white shadow-soft hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-card;
+    @apply btn bg-brand-600 text-onbrand shadow-soft hover:-translate-y-0.5 hover:bg-brand-500 hover:shadow-card;
   }
 
   .btn-outline {
-    @apply btn border border-ink-900/10 bg-white/70 text-ink-800 hover:-translate-y-0.5 hover:border-ink-900/20 hover:bg-white hover:shadow-soft;
+    @apply btn border border-ink-900/[0.12] bg-surface/70 text-ink-800 hover:-translate-y-0.5 hover:border-brand-500/35 hover:bg-surface hover:text-brand-700 hover:shadow-soft;
   }
 
   .btn-ghost {
-    @apply btn text-ink-600 hover:bg-ink-900/5 hover:text-ink-900;
+    @apply btn text-ink-600 hover:bg-ink-900/[0.06] hover:text-ink-900;
   }
 
+  /* Sits on a permanently dark surface, so its colours don't follow the theme. */
   .btn-invert {
-    @apply btn bg-white text-ink-950 shadow-lg hover:-translate-y-0.5 hover:shadow-xl;
+    @apply btn bg-ondark-bg text-ondark-fg shadow-lg hover:-translate-y-0.5 hover:shadow-xl;
   }
 
   .btn-invert-outline {
-    @apply btn border border-white/30 bg-white/5 text-white hover:-translate-y-0.5 hover:bg-white/15;
+    @apply btn border border-ondark-bg/30 bg-ondark-bg/5 text-ondark-bg hover:-translate-y-0.5 hover:bg-ondark-bg/15;
   }
 
   .btn-icon {
-    @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink-900/10 bg-white/70 text-ink-600 transition hover:border-ink-900/20 hover:bg-white hover:text-ink-900;
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink-900/[0.12] bg-surface/70 text-ink-600 transition hover:border-brand-500/35 hover:bg-surface hover:text-brand-700;
   }
 
   /* --- Pills / tags --- */
   .pill {
-    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium text-ink-600 transition duration-200 hover:bg-ink-900/[0.055] hover:text-ink-900;
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium text-ink-600 transition duration-200 hover:bg-ink-900/[0.06] hover:text-ink-900;
   }
 
   .pill-active {
-    @apply bg-ink-950 text-white shadow-soft hover:bg-ink-950 hover:text-white;
+    @apply bg-ink-950 text-paper shadow-soft hover:bg-ink-950 hover:text-paper;
+  }
+
+  /* Filter chips shared by the sidebar, the editor and the post sidebar. */
+  .chip {
+    @apply rounded-full px-3 py-1.5 text-[0.8rem] font-medium transition duration-200;
+  }
+  .chip-idle {
+    @apply chip bg-ink-900/[0.05] text-ink-600 hover:bg-ink-900/[0.09] hover:text-ink-900;
+  }
+  .chip-active {
+    @apply chip bg-ink-950 text-paper shadow-soft;
   }
 
   .tag {
-    @apply inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-inset ring-brand-600/10 transition hover:bg-brand-100;
+    @apply inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-inset ring-brand-600/20 transition hover:bg-brand-100;
   }
 
   .meta {
@@ -197,16 +405,16 @@
 
   /* --- Form controls --- */
   .field {
-    @apply w-full rounded-2xl border border-ink-900/10 bg-white/80 px-4 py-3 text-ink-800 shadow-soft outline-none transition placeholder:text-ink-400 focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-500/10;
+    @apply w-full rounded-2xl border border-ink-900/[0.12] bg-surface/80 px-4 py-3 text-ink-800 shadow-soft outline-none transition placeholder:text-ink-400 focus:border-brand-400 focus:bg-surface focus:ring-4 focus:ring-brand-500/15;
   }
 
   /* --- Loading --- */
   .skeleton {
-    @apply relative overflow-hidden rounded-full bg-ink-900/[0.07];
+    @apply relative overflow-hidden rounded-full bg-ink-900/[0.08];
   }
   .skeleton::after {
     content: "";
-    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/70 to-transparent;
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-ink-900/10 to-transparent;
   }
 
   /* --- Decorative --- */
@@ -215,24 +423,29 @@
   }
 
   .hairline {
-    @apply h-px w-full bg-gradient-to-r from-transparent via-ink-900/10 to-transparent;
+    @apply h-px w-full bg-gradient-to-r from-transparent via-ink-900/[0.12] to-transparent;
+  }
+
+  /* Permanently dark gradient band: hero, CTA, auth pitch panel. */
+  .band {
+    @apply relative overflow-hidden bg-brand-sheen text-ondark-bg;
   }
 }
 
-/* ---------------------------------------------------------------------------
+/* ===========================================================================
    ARTICLE BODY: rendered Quill HTML
-   --------------------------------------------------------------------------- */
+   =========================================================================== */
 .prose-blog {
-  @apply text-[1.0625rem] leading-[1.85] text-ink-700 md:text-[1.125rem];
+  @apply font-reading text-[1.15rem] leading-[1.75] text-ink-700 md:text-[1.2rem];
 }
 .prose-blog > * + * {
-  margin-top: 1.35rem;
+  margin-top: 1.4rem;
 }
 .prose-blog h1,
 .prose-blog h2,
 .prose-blog h3,
 .prose-blog h4 {
-  @apply font-display font-bold leading-[1.25] tracking-tight text-ink-950;
+  @apply font-display font-bold leading-[1.2] tracking-[-0.02em] text-ink-950;
   margin-top: 2.75rem;
   margin-bottom: -0.35rem;
   scroll-margin-top: 6rem;
@@ -253,7 +466,7 @@
   @apply font-semibold text-ink-900;
 }
 .prose-blog a {
-  @apply font-medium text-brand-700 underline decoration-brand-300 decoration-2 underline-offset-[3px] transition hover:decoration-brand-600;
+  @apply font-medium text-brand-700 underline decoration-brand-400/60 decoration-2 underline-offset-[3px] transition hover:decoration-brand-600;
 }
 .prose-blog ul,
 .prose-blog ol {
@@ -269,7 +482,7 @@
   @apply text-brand-500;
 }
 .prose-blog blockquote {
-  @apply my-8 rounded-r-2xl border-l-[3px] border-brand-400 bg-brand-50/60 py-4 pl-6 pr-5 font-display text-lg italic text-ink-700;
+  @apply my-8 rounded-r-2xl border-l-[3px] border-brand-500 bg-brand-50/70 py-4 pl-6 pr-5 text-lg italic text-ink-700;
 }
 .prose-blog blockquote p {
   margin: 0;
@@ -280,7 +493,7 @@
   background: linear-gradient(
     to right,
     transparent,
-    rgba(12, 13, 19, 0.14),
+    rgb(var(--c-ink-900) / 0.16),
     transparent
   );
 }
@@ -294,11 +507,12 @@
   aspect-ratio: 16 / 9;
 }
 .prose-blog code {
-  @apply rounded-md bg-ink-900/[0.06] px-1.5 py-0.5 text-[0.9em] font-medium text-brand-800;
+  @apply rounded-md bg-ink-900/[0.07] px-1.5 py-0.5 text-[0.88em] font-medium text-brand-700;
   font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
 }
 .prose-blog pre {
-  @apply my-8 overflow-x-auto rounded-2xl bg-ink-950 p-5 text-sm leading-relaxed text-ink-100 shadow-card;
+  @apply my-8 overflow-x-auto rounded-2xl bg-code-bg p-5 text-sm leading-relaxed text-code-fg shadow-card;
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
 }
 .prose-blog pre code {
   @apply bg-transparent p-0 text-inherit;
@@ -307,34 +521,34 @@
   @apply my-8 w-full overflow-hidden rounded-2xl text-left text-sm shadow-soft;
 }
 .prose-blog th {
-  @apply bg-ink-50 px-4 py-3 font-semibold text-ink-900;
+  @apply bg-ink-100 px-4 py-3 font-semibold text-ink-900;
 }
 .prose-blog td {
-  @apply border-t border-ink-100 bg-white px-4 py-3;
+  @apply border-t border-ink-200 bg-surface px-4 py-3;
 }
 
 /* Drop cap on the opening paragraph. */
 .prose-blog > p:first-of-type::first-letter {
-  @apply float-left mr-3 mt-1 font-display text-[3.6rem] font-black leading-[0.78] text-brand-700;
+  @apply float-left mr-3 mt-2 font-display text-[3.6rem] font-extrabold leading-[0.78] text-brand-600;
 }
 
-/* ---------------------------------------------------------------------------
+/* ===========================================================================
    QUILL EDITOR
-   --------------------------------------------------------------------------- */
+   =========================================================================== */
 .ql-container,
 .ql-toolbar,
 .ql-editor {
   border: none !important;
 }
 .ql-toolbar.ql-snow {
-  @apply sticky top-0 z-10 rounded-t-2xl border-b border-ink-900/[0.07] bg-white/90 px-3 py-2.5 backdrop-blur;
+  @apply sticky top-0 z-10 rounded-t-2xl border-b border-ink-900/[0.08] bg-surface/90 px-3 py-2.5 backdrop-blur;
 }
 .ql-container.ql-snow {
-  @apply rounded-b-2xl bg-white;
+  @apply rounded-b-2xl bg-surface;
 }
 .ql-editor {
-  @apply min-h-[18rem] px-5 py-5 text-[1.02rem] leading-[1.8] text-ink-700;
-  font-family: theme("fontFamily.sans");
+  @apply min-h-[18rem] px-5 py-5 text-[1.05rem] leading-[1.8] text-ink-700;
+  font-family: theme("fontFamily.reading");
 }
 .ql-editor.ql-blank::before {
   @apply not-italic text-ink-400;
@@ -350,6 +564,9 @@
 .ql-snow .ql-picker {
   color: theme("colors.ink.600");
 }
+.ql-snow .ql-picker-options {
+  @apply rounded-xl border border-ink-900/10 bg-surface shadow-card;
+}
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow.ql-toolbar button.ql-active .ql-stroke {
   stroke: theme("colors.brand.600") !important;
@@ -363,11 +580,17 @@
   @apply rounded-md bg-brand-50;
 }
 
-/* ---------------------------------------------------------------------------
+/* ===========================================================================
    THIRD-PARTY TOUCH-UPS
-   --------------------------------------------------------------------------- */
+   =========================================================================== */
 .Toastify__toast {
   @apply rounded-2xl font-sans text-sm shadow-card;
+}
+[data-theme="dark"] .Toastify__toast {
+  @apply bg-surface-high text-ink-800;
+}
+[data-theme="dark"] .Toastify__close-button > svg {
+  @apply fill-ink-500;
 }
 
 /* react-infinite-scroll-component adds an inline overflow that clips the

@@ -52,12 +52,12 @@ const Comment = ({ comment, postId, pending = false }) => {
           <Image
             src={comment.user.img}
             alt={username}
-            className="h-9 w-9 rounded-full object-cover ring-2 ring-white"
+            className="h-9 w-9 rounded-full object-cover ring-2 ring-surface"
             w="36"
             h="36"
           />
         ) : (
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[0.7rem] font-bold text-brand-700 ring-2 ring-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-[0.7rem] font-bold text-brand-700 ring-2 ring-surface">
             {authorInitials(comment?.user)}
           </span>
         )}

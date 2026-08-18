@@ -271,14 +271,14 @@ const Write = () => {
                   type="button"
                   onClick={() => setCover("")}
                   aria-label="Remove cover image"
-                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-ink-950/60 text-white backdrop-blur transition hover:bg-ink-950"
+                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-scrim/60 text-ondark-bg backdrop-blur transition hover:bg-scrim"
                 >
                   <X size={16} />
                 </button>
               </div>
             ) : (
               <Upload type="image" setProgress={setProgress} setData={setCover}>
-                <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-ink-900/[0.12] bg-white/50 px-6 py-12 text-center transition hover:border-brand-400 hover:bg-white">
+                <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-ink-900/[0.12] bg-surface/50 px-6 py-12 text-center transition hover:border-brand-400 hover:bg-surface">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-brand-600">
                     <ImagePlus size={20} />
                   </span>
@@ -294,7 +294,7 @@ const Write = () => {
 
             {/* TITLE */}
             <input
-              className="w-full bg-transparent font-display text-3xl font-black leading-tight tracking-tight text-ink-950 outline-none placeholder:text-ink-300 md:text-5xl"
+              className="w-full bg-transparent font-display text-3xl font-extrabold leading-tight tracking-tight text-ink-950 outline-none placeholder:text-ink-300 md:text-5xl"
               type="text"
               placeholder="My awesome story"
               name="title"
@@ -314,7 +314,7 @@ const Write = () => {
             />
 
             {/* EDITOR */}
-            <div className="overflow-hidden rounded-3xl border border-ink-900/[0.07] bg-white shadow-soft">
+            <div className="overflow-hidden rounded-3xl border border-ink-900/[0.07] bg-surface shadow-soft">
               <ReactQuill
                 theme="snow"
                 value={value}
@@ -336,11 +336,9 @@ const Write = () => {
                     type="button"
                     aria-pressed={category === option.value}
                     onClick={() => setCategory(option.value)}
-                    className={`rounded-full px-3 py-1.5 text-[0.8rem] font-medium transition duration-200 ${
-                      category === option.value
-                        ? "bg-ink-950 text-white shadow-soft"
-                        : "bg-ink-900/[0.045] text-ink-600 hover:bg-ink-900/[0.08] hover:text-ink-900"
-                    }`}
+                    className={
+                      category === option.value ? "chip-active" : "chip-idle"
+                    }
                   >
                     {option.label}
                   </button>

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+
 const MainLayout = () => {
   const { pathname } = useLocation();
 
@@ -15,12 +16,14 @@ const MainLayout = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="mx-auto w-full max-w-[90rem] flex-1 px-4 md:px-8 lg:px-12 2xl:px-16">
-        <Outlet />
+
+      <main id="main" className="flex-1">
+        <div className="shell">
+          <Outlet />
+        </div>
       </main>
-      <div className="mx-auto w-full max-w-[90rem] px-4 md:px-8 lg:px-12 2xl:px-16">
-        <Footer />
-      </div>
+
+      <Footer />
     </div>
   );
 };

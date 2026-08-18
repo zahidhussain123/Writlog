@@ -11,13 +11,14 @@ const CATEGORIES = [
   { value: "marketing", label: "Marketing", to: "/posts?cat=marketing" },
 ];
 
-const MainCategories = () => {
+
+const MainCategories = ({ className = "" }) => {
   const [searchParams] = useSearchParams();
   const activeCat = searchParams.get("cat") || "all";
 
   return (
-    <div className="glass-bar rounded-4xl p-2.5 xl:rounded-full">
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+    <div className={`glass-bar rounded-4xl p-2.5 lg:rounded-full ${className}`}>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         {/* Category rail. Scrolls sideways on narrow screens instead of wrapping. */}
         <nav
           aria-label="Categories"
@@ -27,6 +28,7 @@ const MainCategories = () => {
             <Link
               key={category.value}
               to={category.to}
+              aria-current={activeCat === category.value ? "true" : undefined}
               className={`pill ${
                 activeCat === category.value ? "pill-active" : ""
               }`}
@@ -36,9 +38,9 @@ const MainCategories = () => {
           ))}
         </nav>
 
-        <span className="hidden h-7 w-px shrink-0 bg-ink-900/10 xl:block" />
+        <span className="hidden h-7 w-px shrink-0 bg-ink-900/10 lg:block" />
 
-        <Search className="xl:w-72 xl:shrink-0 xl:border-transparent xl:bg-ink-900/[0.035] xl:shadow-none" />
+        <Search className="lg:w-72 lg:shrink-0 lg:border-transparent lg:bg-ink-900/[0.04] lg:shadow-none" />
       </div>
     </div>
   );

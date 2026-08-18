@@ -56,7 +56,7 @@ const LikeButton = ({ post, queryKey, className = "" }) => {
       <Link
         to={routePaths.LOGIN}
         title="Sign in to like this post"
-        className={`${SHELL} border-ink-900/10 bg-white/70 text-ink-500 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600 ${className}`}
+        className={`${SHELL} border-ink-900/10 bg-surface/70 text-ink-500 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600 ${className}`}
       >
         <Heart size={14} />
         {label ? `${label} likes` : "Like"}
@@ -74,7 +74,7 @@ const LikeButton = ({ post, queryKey, className = "" }) => {
       className={`${SHELL} ${
         isLiked
           ? "border-rose-500/25 bg-rose-50 text-rose-600 hover:bg-rose-100/70"
-          : "border-ink-900/10 bg-white/70 text-ink-500 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600"
+          : "border-ink-900/10 bg-surface/70 text-ink-500 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600"
       } ${className}`}
     >
       <Heart size={14} className={isLiked ? "fill-current" : ""} />

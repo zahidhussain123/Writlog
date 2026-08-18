@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, Link2, Linkedin, Twitter } from "lucide-react";
 import { toast } from "react-toastify";
 
-const SharePost = ({ title = "", className = "" }) => {
+const SharePost = ({ title = "", className = "", orientation = "row" }) => {
   const [copied, setCopied] = useState(false);
 
   const url = typeof window !== "undefined" ? window.location.href : "";
@@ -34,7 +34,11 @@ const SharePost = ({ title = "", className = "" }) => {
   ];
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div
+      className={`flex items-center gap-2 ${
+        orientation === "column" ? "flex-col" : ""
+      } ${className}`}
+    >
       <button
         type="button"
         onClick={copyLink}

@@ -1,5 +1,12 @@
 import { useSearchParams } from "react-router-dom";
-import { Check, Clock, Flame, RotateCcw, Sparkles, TrendingUp } from "lucide-react";
+import {
+  Check,
+  Clock,
+  Flame,
+  RotateCcw,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import Search from "./search";
 
 const SORTS = [
@@ -17,6 +24,7 @@ const CATEGORIES = [
   { value: "seo", label: "Search Engines" },
   { value: "marketing", label: "Marketing" },
 ];
+
 
 const SideMenu = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,7 +44,7 @@ const SideMenu = () => {
   };
 
   return (
-    <aside className="h-max w-full md:sticky md:top-28 md:w-72">
+    <aside className="h-max w-full lg:sticky lg:top-28">
       <div className="card p-5">
         <h2 className="eyebrow mb-3">Search</h2>
         <Search />
@@ -55,8 +63,8 @@ const SideMenu = () => {
                 onClick={() => updateParam("sort", value)}
                 className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition duration-200 ${
                   active
-                    ? "bg-brand-50 font-semibold text-brand-800 ring-1 ring-inset ring-brand-600/15"
-                    : "text-ink-600 hover:bg-ink-900/[0.04] hover:text-ink-900"
+                    ? "bg-brand-50 font-semibold text-brand-700 ring-1 ring-inset ring-brand-600/25"
+                    : "text-ink-600 hover:bg-ink-900/[0.05] hover:text-ink-900"
                 }`}
               >
                 <Icon
@@ -64,7 +72,9 @@ const SideMenu = () => {
                   className={active ? "text-brand-600" : "text-ink-400"}
                 />
                 {label}
-                {active && <Check size={14} className="ml-auto text-brand-600" />}
+                {active && (
+                  <Check size={14} className="ml-auto text-brand-600" />
+                )}
               </button>
             );
           })}
@@ -80,11 +90,9 @@ const SideMenu = () => {
               type="button"
               aria-pressed={activeCat === category.value}
               onClick={() => updateParam("cat", category.value)}
-              className={`rounded-full px-3 py-1.5 text-[0.8rem] font-medium transition duration-200 ${
-                activeCat === category.value
-                  ? "bg-ink-950 text-white shadow-soft"
-                  : "bg-ink-900/[0.045] text-ink-600 hover:bg-ink-900/[0.08] hover:text-ink-900"
-              }`}
+              className={
+                activeCat === category.value ? "chip-active" : "chip-idle"
+              }
             >
               {category.label}
             </button>

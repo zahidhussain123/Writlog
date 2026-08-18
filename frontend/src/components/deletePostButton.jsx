@@ -60,7 +60,7 @@ const DeletePostButton = ({ post, className = "" }) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-white/70 px-3.5 py-2 text-xs font-semibold text-ink-500 transition hover:border-red-600/20 hover:bg-red-50 hover:text-red-600 ${className}`}
+        className={`inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-surface/70 px-3.5 py-2 text-xs font-semibold text-ink-500 transition hover:border-red-600/20 hover:bg-red-50 hover:text-red-600 ${className}`}
       >
         <Trash2 size={14} />
         Delete post
@@ -71,14 +71,14 @@ const DeletePostButton = ({ post, className = "" }) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-post-title"
-          className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-ink-950/40 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-scrim/50 p-4 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget && !mutation.isPending) {
               setOpen(false);
             }
           }}
         >
-          <div className="w-full max-w-md animate-fade-up rounded-3xl border border-ink-900/[0.06] bg-white p-6 shadow-lift md:p-8">
+          <div className="w-full max-w-md animate-fade-up rounded-3xl border border-ink-900/[0.06] bg-surface p-6 shadow-lift md:p-8">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600 ring-1 ring-inset ring-red-600/10">
               <TriangleAlert size={22} />
             </span>
@@ -110,7 +110,7 @@ const DeletePostButton = ({ post, className = "" }) => {
                 type="button"
                 onClick={() => mutation.mutate()}
                 disabled={mutation.isPending}
-                className="btn bg-red-600 text-white shadow-soft transition hover:bg-red-700 disabled:opacity-60"
+                className="btn bg-red-600 text-paper shadow-soft transition hover:bg-red-700 disabled:opacity-60"
               >
                 {mutation.isPending ? (
                   <Loader2 size={15} className="animate-spin" />

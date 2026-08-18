@@ -39,7 +39,7 @@ const Search = ({ className = "" }) => {
         e.preventDefault();
         submit(value);
       }}
-      className={`group flex items-center gap-2.5 rounded-full border border-ink-900/[0.08] bg-white/70 px-4 py-2.5 shadow-soft transition focus-within:border-brand-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-brand-500/10 ${className}`}
+      className={`group flex items-center gap-2.5 rounded-full border border-ink-900/[0.08] bg-surface/70 px-4 py-2.5 shadow-soft transition focus-within:border-brand-400 focus-within:bg-surface focus-within:ring-4 focus-within:ring-brand-500/10 ${className}`}
     >
       <SearchIcon
         size={17}

@@ -16,7 +16,7 @@ const AuthHeader = () => {
           appearance={{
             elements: {
               avatarBox:
-                "h-9 w-9 ring-2 ring-white shadow-soft rounded-full transition hover:ring-brand-200",
+                "h-9 w-9 ring-2 ring-surface shadow-soft rounded-full transition hover:ring-brand-200",
               userButtonPopoverCard: "rounded-2xl shadow-lift",
             },
           }}

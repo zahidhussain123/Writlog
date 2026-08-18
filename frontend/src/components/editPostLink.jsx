@@ -12,7 +12,7 @@ const EditPostLink = ({ post, className = "" }) => {
   return (
     <Link
       to={editPath(post.slug)}
-      className={`inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-white/70 px-3.5 py-2 text-xs font-semibold text-ink-500 transition hover:border-brand-500/25 hover:bg-brand-50 hover:text-brand-700 ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 bg-surface/70 px-3.5 py-2 text-xs font-semibold text-ink-500 transition hover:border-brand-500/25 hover:bg-brand-50 hover:text-brand-700 ${className}`}
     >
       <Pencil size={14} />
       Edit post

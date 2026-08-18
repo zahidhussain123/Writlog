@@ -1,15 +1,35 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { PenLine } from "lucide-react";
+import { PenLine, X } from "lucide-react";
 import { routePaths } from "../constants/pathRoute";
 import AuthHeader from "./authHeader";
+import ThemeToggle from "./themeToggle";
 
 const NAV_LINKS = [
   { label: "Home", to: routePaths.HOME },
   { label: "Trending", to: "/posts?sort=trending" },
-  { label: "Most Popular", to: "/posts?sort=popular" },
+  { label: "Popular", to: "/posts?sort=popular" },
   { label: "All Posts", to: routePaths.POSTS },
 ];
+
+
+const Wordmark = () => (
+  <span className="flex items-center gap-2.5">
+    <img
+      src="/logo.svg"
+      alt=""
+      width={32}
+      height={32}
+      className="h-8 w-8 transition duration-500 group-hover:-rotate-6 group-hover:scale-105"
+    />
+    <span
+      className="font-display text-[1.4rem] font-extrabold tracking-[-0.03em] text-ink-950"
+    >
+      Writlog
+      <span className="text-brand-500">.</span>
+    </span>
+  </span>
+);
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -43,117 +63,111 @@ const Navbar = () => {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-ink-900/[0.07] bg-paper/80 shadow-soft backdrop-blur-xl backdrop-saturate-150"
+          ? "border-b border-ink-900/[0.08] bg-paper/80 shadow-soft backdrop-blur-xl backdrop-saturate-150"
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 w-full max-w-[90rem] items-center justify-between px-4 md:h-20 md:px-8 lg:px-12 2xl:px-16">
-        {/* LOGO */}
+      <div className="shell flex h-16 items-center gap-4 md:h-20">
+        {/* LEFT: identity */}
         <Link
           to={routePaths.HOME}
-          className="group flex items-center gap-3"
+          className="group mr-auto flex shrink-0 items-center lg:mr-0"
           aria-label="Writlog home"
         >
-          <img
-            src="/logo.svg"
-            alt=""
-            width={34}
-            height={34}
-            className="h-[34px] w-[34px] transition duration-500 group-hover:rotate-[-8deg] group-hover:scale-105"
-          />
-          <span className="font-display text-2xl font-black tracking-tight text-ink-950">
-            Writlog
-          </span>
+          <Wordmark />
         </Link>
 
-        {/* DESKTOP MENU */}
-        <nav className="hidden items-center gap-1 md:flex">
+ 
+        <nav
+          aria-label="Primary"
+          className="mx-auto hidden items-center gap-0.5 rounded-full border border-ink-900/[0.08] bg-surface/60 p-1 shadow-soft backdrop-blur-md lg:flex"
+        >
           {NAV_LINKS.map((link) => (
             <Link
               key={link.label}
               to={link.to}
-              className={`relative rounded-full px-4 py-2 text-sm font-medium transition duration-200 ${
+              aria-current={isActive(link.to) ? "page" : undefined}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition duration-200 ${
                 isActive(link.to)
-                  ? "text-ink-950"
-                  : "text-ink-600 hover:bg-ink-900/[0.05] hover:text-ink-950"
+                  ? "bg-ink-950 text-paper shadow-soft"
+                  : "text-ink-600 hover:bg-ink-900/[0.06] hover:text-ink-950"
               }`}
             >
               {link.label}
-              {isActive(link.to) && (
-                <span className="absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-brand-600" />
-              )}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <Link to={routePaths.WRITE} className="btn-outline">
+        {/* RIGHT: controls */}
+        <div className="ml-auto hidden items-center gap-2 lg:flex">
+          <ThemeToggle />
+          <Link to={routePaths.WRITE} className="btn-outline px-4">
             <PenLine size={15} />
             Write
           </Link>
           <AuthHeader />
         </div>
 
-        {/* MOBILE TRIGGER */}
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((prev) => !prev)}
-          className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-ink-900/[0.06] md:hidden"
-        >
-          <span className="flex w-6 flex-col items-center gap-[5px]">
-            <span
-              className={`h-[2px] w-6 rounded-full bg-ink-900 transition-transform duration-300 ${
-                open ? "translate-y-[7px] rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`h-[2px] w-6 rounded-full bg-ink-900 transition-opacity duration-200 ${
-                open ? "opacity-0" : ""
-              }`}
-            />
-            <span
-              className={`h-[2px] w-6 rounded-full bg-ink-900 transition-transform duration-300 ${
-                open ? "-translate-y-[7px] -rotate-45" : ""
-              }`}
-            />
-          </span>
-        </button>
+        {/* MOBILE CONTROLS */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((prev) => !prev)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-ink-900/[0.12] bg-surface/70 text-ink-700 transition hover:bg-surface"
+          >
+            {open ? (
+              <X size={17} />
+            ) : (
+              <span className="flex w-4 flex-col items-end gap-[4px]">
+                <span className="h-[2px] w-4 rounded-full bg-current" />
+                <span className="h-[2px] w-3 rounded-full bg-current" />
+                <span className="h-[2px] w-4 rounded-full bg-current" />
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* MOBILE DRAWER */}
+      {/* MOBILE DRAWER — a labelled sheet rather than a bare link stack. */}
       <div
-        className={`fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col gap-2 overflow-y-auto bg-paper/95 px-6 pb-10 pt-8 backdrop-blur-xl transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-16 z-40 md:top-20 overflow-y-auto bg-paper/95 backdrop-blur-xl transition-transform duration-300 ease-out lg:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {NAV_LINKS.map((link, i) => (
-          <Link
-            key={link.label}
-            to={link.to}
-            style={{ animationDelay: open ? `${i * 45}ms` : "0ms" }}
-            className={`rounded-2xl px-4 py-3.5 font-display text-2xl font-bold tracking-tight transition ${
-              open ? "animate-fade-up" : ""
-            } ${
-              isActive(link.to)
-                ? "bg-white text-brand-700 shadow-soft"
-                : "text-ink-800 hover:bg-white/70"
-            }`}
-          >
-            {link.label}
+        <div className="shell flex min-h-full flex-col gap-2 pb-12 pt-8">
+          <p className="eyebrow mb-2">Browse</p>
+
+          {NAV_LINKS.map((link, i) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              style={{ animationDelay: open ? `${i * 45}ms` : "0ms" }}
+              className={`rounded-2xl px-4 py-3.5 font-display text-2xl font-bold tracking-[-0.02em] transition ${
+                open ? "animate-fade-up" : ""
+              } ${
+                isActive(link.to)
+                  ? "bg-surface text-brand-700 shadow-soft"
+                  : "text-ink-800 hover:bg-surface/70"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <div className="hairline my-6" />
+
+          <Link to={routePaths.WRITE} className="btn-primary w-full py-3.5">
+            <PenLine size={16} />
+            Write a post
           </Link>
-        ))}
 
-        <div className="hairline my-5" />
-
-        <Link to={routePaths.WRITE} className="btn-primary w-full py-3.5">
-          <PenLine size={16} />
-          Write a post
-        </Link>
-
-        <div className="mt-6 flex justify-center">
-          <AuthHeader />
+          <div className="mt-auto flex items-center justify-between gap-4 pt-10">
+            <AuthHeader />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>
