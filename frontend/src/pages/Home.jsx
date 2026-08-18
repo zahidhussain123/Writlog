@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight, PenLine, Sparkles } from "lucide-react";
+import HeroSpotlight from "../components/heroSpotlight";
 import MainCategories from "../components/mainCategories";
 import FeaturedPosts from "../components/featuredPosts";
 import PostList from "../components/postList";
@@ -34,8 +35,8 @@ const Homepage = () => {
         <div className="pointer-events-none absolute -right-28 -top-28 h-80 w-80 animate-float rounded-full bg-brand-400/35 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-36 -left-24 h-96 w-96 rounded-full bg-accent-400/20 blur-3xl" />
 
-        <div className="relative flex flex-col items-start justify-between gap-12 lg:flex-row lg:items-center">
-          <div className="max-w-2xl animate-fade-up">
+        <div className="relative flex flex-col items-start justify-between gap-12 lg:flex-row lg:items-center lg:gap-16">
+          <div className="max-w-2xl flex-1 animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-eyebrow text-brand-100 ring-1 ring-inset ring-white/20 backdrop-blur-sm">
               <Sparkles size={13} />
               Fresh stories every week
@@ -71,44 +72,7 @@ const Homepage = () => {
             </div>
           </div>
 
-          {/* Rotating write-a-story badge */}
-          <Link
-            to={routePaths.WRITE}
-            className="group relative hidden shrink-0 lg:block"
-            aria-label="Write your story"
-          >
-            <svg
-              viewBox="0 0 200 200"
-              width="212"
-              height="212"
-              className="animate-spin-slow text-brand-100/90"
-              aria-hidden="true"
-            >
-              <path
-                id="circlePath"
-                fill="none"
-                d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
-              />
-              <text
-                fill="currentColor"
-                className="text-[12.5px] font-semibold uppercase tracking-[0.28em]"
-              >
-                <textPath href="#circlePath" startOffset="0%">
-                  • Write your story
-                </textPath>
-                <textPath href="#circlePath" startOffset="50%">
-                  • Share your idea
-                </textPath>
-              </text>
-            </svg>
-
-            <span className="absolute inset-0 m-auto flex h-24 w-24 items-center justify-center rounded-full bg-white text-ink-950 shadow-2xl transition duration-500 group-hover:scale-110">
-              <ArrowRight
-                size={30}
-                className="transition duration-500 group-hover:translate-x-1"
-              />
-            </span>
-          </Link>
+          <HeroSpotlight />
         </div>
       </section>
 

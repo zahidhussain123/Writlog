@@ -85,3 +85,10 @@ export const deletePost = async (id, getToken) => {
   });
   return res.data;
 };
+
+export const fetchLatestPost = async () => {
+  const res = await axios.get(`${BASE_URL}/posts`, {
+    params: { limit: 1, sort: "newest" },
+  });
+  return res.data;
+};
