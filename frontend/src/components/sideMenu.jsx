@@ -3,11 +3,13 @@ import {
   Check,
   Clock,
   Flame,
+  PenLine,
   RotateCcw,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
 import Search from "./search";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const SORTS = [
   { value: "newest", label: "Newest", Icon: Sparkles },
@@ -29,6 +31,10 @@ const CATEGORIES = [
 const SideMenu = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const { handle } = useCurrentUser();
+  // Filtering is by handle, so this row can only appear once we know it.
+  const showingMine = !!handle && searchParams.get("author") === handle;
+
   const activeSort = searchParams.get("sort") || "newest";
   const activeCat = searchParams.get("cat") || "all";
   const hasFilters = [...searchParams.keys()].length > 0;
@@ -48,6 +54,32 @@ const SideMenu = () => {
       <div className="card p-5">
         <h2 className="eyebrow mb-3">Search</h2>
         <Search />
+
+        {handle && (
+          <>
+            <div className="hairline my-6" />
+            <h2 className="eyebrow mb-3">Yours</h2>
+            <button
+              type="button"
+              aria-pressed={showingMine}
+              onClick={() => updateParam("author", showingMine ? "" : handle)}
+              className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition duration-200 ${
+                showingMine
+                  ? "bg-brand-50 font-semibold text-brand-700 ring-1 ring-inset ring-brand-600/25"
+                  : "text-ink-600 hover:bg-ink-900/[0.05] hover:text-ink-900"
+              }`}
+            >
+              <PenLine
+                size={15}
+                className={showingMine ? "text-brand-600" : "text-ink-400"}
+              />
+              Only my posts
+              {showingMine && (
+                <Check size={14} className="ml-auto text-brand-600" />
+              )}
+            </button>
+          </>
+        )}
 
         <div className="hairline my-6" />
 

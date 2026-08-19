@@ -57,6 +57,11 @@ const Write = () => {
   const [category, setCategory] = useState("general");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
+  // The Quill wrapper only accepts a new `value` while its editor instance
+  // exists, and StrictMode tears that instance down and rebuilds it right as
+  // the post arrives. A body that lands in that gap is dropped and never
+  // re-applied, so the form waits here and mounts with everything in place.
+  const [prefilled, setPrefilled] = useState(!isEditing);
 
   const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
@@ -81,6 +86,7 @@ const Write = () => {
     setCategory(post.category || "general");
     setValue(post.content || "");
     setCover(post.img ? { filePath: post.img } : "");
+    setPrefilled(true);
   }, [post?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -174,6 +180,15 @@ const Write = () => {
           </Link>
         }
       />
+    );
+  }
+
+  if (isEditing && !prefilled) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center gap-2 text-ink-500">
+        <Loader2 size={18} className="animate-spin" />
+        Loading…
+      </div>
     );
   }
 

@@ -437,6 +437,13 @@
    =========================================================================== */
 .prose-blog {
   @apply font-reading text-[1.15rem] leading-[1.75] text-ink-700 md:text-[1.2rem];
+
+  overflow-wrap: break-word;
+}
+/* Blank blocks from a paste: an empty <li> still draws its bullet. */
+.prose-blog p:empty,
+.prose-blog li:empty {
+  display: none;
 }
 .prose-blog > * + * {
   margin-top: 1.4rem;

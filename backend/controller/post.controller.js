@@ -4,6 +4,7 @@ import commentModel from "../models/comment.model.js";
 import postModel from "../models/post.model.js";
 import userModel from "../models/user.model.js";
 import { ensureUser } from "../lib/users.js";
+import { normalizePostHtml } from "../lib/postContent.js";
 
 const SORT_OPTIONS = {
   newest: { createdAt: -1 },
@@ -156,7 +157,7 @@ export const createPost = async (req, res) => {
       title: title.trim(),
       desc,
       category: category || "general",
-      content,
+      content: normalizePostHtml(content),
       img,
     });
 
@@ -219,8 +220,11 @@ export const updatePost = async (req, res) => {
         return res.status(400).json({ message: "Title is required" });
       }
     }
-    if (updates.content !== undefined && !String(updates.content).trim()) {
-      return res.status(400).json({ message: "Content is required" });
+    if (updates.content !== undefined) {
+      if (!String(updates.content).trim()) {
+        return res.status(400).json({ message: "Content is required" });
+      }
+      updates.content = normalizePostHtml(updates.content);
     }
 
     if (Object.keys(updates).length === 0) {

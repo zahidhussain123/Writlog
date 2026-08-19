@@ -11,6 +11,7 @@ import {
 import PostList from "../components/postList";
 import SideMenu from "../components/sideMenu";
 import { routePaths } from "../constants/pathRoute";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const SORT_LABELS = {
   newest: "Newest first",
@@ -35,8 +36,14 @@ const PostListPage = () => {
   const author = searchParams.get("author");
   const sort = searchParams.get("sort") || "newest";
 
+
+  const { handle } = useCurrentUser();
+  const isMine = !!author && author === handle;
+
   const heading = search
     ? `Results for “${search}”`
+    : isMine
+    ? "Your posts"
     : author
     ? `Posts by ${author.replace(/-/g, " ")}`
     : cat
@@ -45,6 +52,8 @@ const PostListPage = () => {
 
   const eyebrow = search
     ? "Search"
+    : isMine
+    ? "Your work"
     : author
     ? "Author"
     : cat
@@ -54,7 +63,10 @@ const PostListPage = () => {
   const chips = [
     cat && { key: "cat", label: cat.replace(/-/g, " ") },
     search && { key: "search", label: `“${search}”` },
-    author && { key: "author", label: `by ${author.replace(/-/g, " ")}` },
+    author && {
+      key: "author",
+      label: isMine ? "by you" : `by ${author.replace(/-/g, " ")}`,
+    },
   ].filter(Boolean);
 
   const removeChip = (key) => {
@@ -76,7 +88,7 @@ const PostListPage = () => {
         </Link>
         <ChevronRight size={14} />
         <span className="capitalize text-brand-700">
-          {cat ? cat.replace(/-/g, " ") : "All posts"}
+          {cat ? cat.replace(/-/g, " ") : isMine ? "Your posts" : "All posts"}
         </span>
       </nav>
 

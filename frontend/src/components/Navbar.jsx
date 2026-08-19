@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { PenLine, X } from "lucide-react";
-import { routePaths } from "../constants/pathRoute";
+import { authorPath, routePaths } from "../constants/pathRoute";
 import AuthHeader from "./authHeader";
 import ThemeToggle from "./themeToggle";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const NAV_LINKS = [
   { label: "Home", to: routePaths.HOME },
@@ -35,6 +36,13 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { handle } = useCurrentUser();
+
+  // "My Posts" only exists once we know the reader's handle, since the filter
+  // is by handle rather than by session.
+  const navLinks = handle
+    ? [...NAV_LINKS, { label: "My Posts", to: authorPath(handle) }]
+    : NAV_LINKS;
 
   const current = `${location.pathname}${location.search}`;
 
@@ -82,7 +90,7 @@ const Navbar = () => {
           aria-label="Primary"
           className="mx-auto hidden items-center gap-0.5 rounded-full border border-ink-900/[0.08] bg-surface/60 p-1 shadow-soft backdrop-blur-md lg:flex"
         >
-          {NAV_LINKS.map((link) => (
+          {navLinks?.map((link) => (
             <Link
               key={link.label}
               to={link.to}
@@ -140,7 +148,7 @@ const Navbar = () => {
         <div className="shell flex min-h-full flex-col gap-2 pb-12 pt-8">
           <p className="eyebrow mb-2">Browse</p>
 
-          {NAV_LINKS.map((link, i) => (
+          {navLinks?.map((link, i) => (
             <Link
               key={link.label}
               to={link.to}
